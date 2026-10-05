@@ -1,5 +1,6 @@
 import { useEffect, useState, type ChangeEvent } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
+import axios from 'axios'
 import { Edit, Plus, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { Header } from '@/components/layout/header'
@@ -74,6 +75,19 @@ function slugify(value: string) {
     .trim()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
+}
+
+function getCategoryApiErrorMessage(error: unknown, fallback: string) {
+  if (axios.isAxiosError<{ message?: string }>(error)) {
+    return (
+      error.response?.data?.message ??
+      (error.code === 'ERR_NETWORK'
+        ? 'Backend API is unreachable. Verify the PHP server and VITE_API_BASE_URL.'
+        : error.message)
+    )
+  }
+
+  return error instanceof Error ? error.message : fallback
 }
 
 function CategoryDialog({
@@ -211,8 +225,9 @@ function CategoryDialog({
       await queryClient.invalidateQueries({ queryKey: ['categories'] })
       await queryClient.invalidateQueries({ queryKey: ['store-categories'] })
       onOpenChange(false)
-    } catch {
-      toast.error('Failed to save category')
+    } catch (error) {
+      const message = getCategoryApiErrorMessage(error, 'Unexpected error.')
+      toast.error(`Failed to save category: ${message}`)
     } finally {
       setSaving(false)
     }
@@ -383,8 +398,10 @@ export function Categories() {
 
       await queryClient.invalidateQueries({ queryKey: ['categories'] })
       toast.success('Category deleted')
-    } catch {
-      toast.error('Failed to delete category')
+    } catch (error) {
+      toast.error(
+        `Failed to delete category: ${getCategoryApiErrorMessage(error, 'Unexpected error.')}`
+      )
     }
   }
 

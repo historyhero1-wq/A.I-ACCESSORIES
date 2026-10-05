@@ -9,58 +9,74 @@ import { CONTACT } from "@/lib/contact";
 import { ArrowRight, Shield, Truck, RotateCcw, Star } from "lucide-react";
 
 // MicroTech-style categories with REAL images
-const categoryItems = [
+interface CategoryItem {
+  title: string;
+  image: string;
+  slug?: string;
+}
+
+const categoryItems: CategoryItem[] = [
   {
     title: "Under 999",
+    slug: "under-999",
     image: "https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=200&q=80",
   },
   {
     title: "Smart Watches",
+    slug: "smart-watches",
     image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200&q=80",
   },
   {
     title: "Chargers",
+    slug: "chargers",
     image: "https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=200&q=80",
   },
   {
     title: "Earbuds",
+    slug: "earbuds",
     image: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=200&q=80",
   },
   {
     title: "Phone Covers",
+    slug: "phone-covers",
     image: "https://images.unsplash.com/photo-1616348436168-de43ad0db179?w=200&q=80",
   },
   {
     title: "Cables",
+    slug: "cables",
     image: "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=200&q=80",
   },
   {
     title: "Power Banks",
+    slug: "power-banks",
     image: "https://images.unsplash.com/photo-1609592424216-2ea3f4e14cd9?w=200&q=80",
   },
   {
     title: "Screen Guard",
+    slug: "screen-guard",
     image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=200&q=80",
   },
   {
     title: "Under 1499",
+    slug: "under-1499",
     image: "https://images.unsplash.com/photo-1598327105854-c8674faddf79?w=200&q=80",
   },
   {
     title: "Hands-free",
+    slug: "hands-free",
     image: "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=200&q=80",
   },
   {
     title: "Under 2999",
+    slug: "under-2999",
     image: "https://images.unsplash.com/photo-1567581935884-3349723552ca?w=200&q=80",
   },
   {
     title: "All Tech",
+    slug: "all-tech",
     image: "https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=200&q=80",
   },
 ];
-
-const loopItems = [...categoryItems, ...categoryItems, ...categoryItems];
 
 const features = [
   { icon: <Shield size={20} />, title: "100% Genuine", desc: "Original products only", color: "bg-green-50 text-green-600" },
@@ -71,18 +87,19 @@ const features = [
 
 const Index = () => {
   const { sections: homeSections, isLoading: homeSectionsLoading } = useHomeCategorySections();
-  const { categories: shopCategories } = useStoreCategories(20);
+  const {
+    categories: shopCategories,
+    isLoading: shopCategoriesLoading,
+    error: shopCategoriesError,
+  } = useStoreCategories();
 
-  const displayCategories =
-    shopCategories && shopCategories.length > 0
-      ? shopCategories.map((c) => ({
-          title: c.name,
-          slug: c.slug,
-          image:
-            c.image ||
-            "https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=200&q=80",
-        }))
-      : categoryItems;
+  const displayCategories: CategoryItem[] = shopCategories.map((category) => ({
+    title: category.name,
+    slug: category.slug,
+    image:
+      category.image ||
+      "https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=200&q=80",
+  }));
 
   const loopItems = [
     ...displayCategories,
@@ -95,39 +112,46 @@ const Index = () => {
       {/* Hero Slider */}
       <HeroSlider />
 
-      {/* CATEGORY CIRCLES — connected to Admin categories with real images */}
-      <section className="border-b border-gray-100 bg-white overflow-hidden">
-        <div className="overflow-x-hidden py-6 sm:py-8">
-          <div
-            className="category-marquee flex w-max items-end gap-5 sm:gap-7 px-4"
-            style={{ willChange: "transform" }}
-          >
-            {loopItems.map((cat, i) => {
-              const catSlug = cat.slug || cat.title.toLowerCase().replace(/\s+/g, "-");
-              return (
-                <Link
-                  key={`${cat.title}-${i}`}
-                  to={`/products?category=${encodeURIComponent(catSlug)}`}
-                  className="group flex w-20 sm:w-24 shrink-0 flex-col items-center gap-2 text-center"
-                >
-                  {/* Circle image */}
-                  <div className="relative h-16 w-16 sm:h-20 sm:w-20 overflow-hidden rounded-full border-2 border-transparent bg-gray-100 transition-all duration-300 group-hover:border-blue-400 group-hover:shadow-lg group-hover:scale-105">
-                    <img
-                      src={cat.image}
-                      alt={cat.title}
-                      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
-                      loading="lazy"
-                    />
-                  </div>
-                  <span className="text-[11px] sm:text-xs font-semibold text-gray-700 group-hover:text-blue-600 transition-colors leading-tight">
-                    {cat.title}
-                  </span>
-                </Link>
-              );
-            })}
+      {/* CATEGORY CIRCLES — populated from Admin categories */}
+      {!shopCategoriesLoading && (displayCategories.length > 0 || shopCategoriesError) && (
+        <section className="border-b border-gray-100 bg-white overflow-hidden">
+          <div className="overflow-x-hidden py-6 sm:py-8">
+            {shopCategoriesError ? (
+              <p role="alert" className="px-4 text-center text-sm text-red-600">
+                Could not load categories. Check that the backend API is running.
+              </p>
+            ) : (
+              <div
+                className="category-marquee flex w-max items-end gap-5 sm:gap-7 px-4"
+                style={{ willChange: "transform" }}
+              >
+                {loopItems.map((cat, i) => {
+                  const catSlug = cat.slug ?? cat.title.toLowerCase().replace(/\s+/g, "-");
+                  return (
+                    <Link
+                      key={`${cat.title}-${i}`}
+                      to={`/products?category=${encodeURIComponent(catSlug)}`}
+                      className="group flex w-20 sm:w-24 shrink-0 flex-col items-center gap-2 text-center"
+                    >
+                      <div className="relative h-16 w-16 sm:h-20 sm:w-20 overflow-hidden rounded-full border-2 border-transparent bg-gray-100 transition-all duration-300 group-hover:border-blue-400 group-hover:shadow-lg group-hover:scale-105">
+                        <img
+                          src={cat.image}
+                          alt={cat.title}
+                          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
+                          loading="lazy"
+                        />
+                      </div>
+                      <span className="text-[11px] sm:text-xs font-semibold text-gray-700 group-hover:text-blue-600 transition-colors leading-tight">
+                        {cat.title}
+                      </span>
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* TRUST BAR */}
       <section className="border-b border-gray-100 bg-gray-50 py-6">
@@ -188,6 +212,10 @@ const Index = () => {
               [...Array(6)].map((_, i) => (
                 <div key={i} className="h-28 animate-pulse rounded-2xl bg-gray-200" />
               ))
+            ) : shopCategoriesError ? (
+              <p role="alert" className="col-span-full py-8 text-center text-sm text-red-600">
+                Could not load categories. Check that the backend API is running.
+              </p>
             ) : shopCategories.length > 0 ? (
               shopCategories.map((cat, i) => {
                 const catImages = categoryItems.find(c =>

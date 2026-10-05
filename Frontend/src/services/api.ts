@@ -383,34 +383,29 @@ export type StoreCategory = {
 };
 
 export async function fetchStoreCategories(limit?: number): Promise<StoreCategory[]> {
-    try {
-        const response = await fetch(getBackendUrl('categories').toString(), {
-            method: 'GET',
-            headers: { Accept: 'application/json' },
-        });
+    const response = await fetch(getBackendUrl('categories').toString(), {
+        method: 'GET',
+        headers: { Accept: 'application/json' },
+    });
 
-        if (!response.ok) {
-            throw new Error(`Error fetching categories: ${response.statusText}`);
-        }
-
-        const data = await response.json();
-        if (!Array.isArray(data)) {
-            return [];
-        }
-
-        const mapped = data.map((category: StoreCategory & { image?: string | null }) => ({
-            id: Number(category.id),
-            name: category.name,
-            slug: category.slug,
-            product_count: Number(category.product_count ?? 0),
-            image: category.image ? resolveImageUrl(category.image) : null,
-        }));
-
-        return typeof limit === 'number' ? mapped.slice(0, limit) : mapped;
-    } catch (error) {
-        console.error('Failed to fetch categories:', error);
-        return [];
+    if (!response.ok) {
+        throw new Error(`Error fetching categories: ${response.statusText}`);
     }
+
+    const data = await response.json();
+    if (!Array.isArray(data)) {
+        throw new Error('Invalid response while fetching categories.');
+    }
+
+    const mapped = data.map((category: StoreCategory & { image?: string | null }) => ({
+        id: Number(category.id),
+        name: category.name,
+        slug: category.slug,
+        product_count: Number(category.product_count ?? 0),
+        image: category.image ? resolveImageUrl(category.image) : null,
+    }));
+
+    return typeof limit === 'number' ? mapped.slice(0, limit) : mapped;
 }
 
 export type MegaMenuCategory = StoreCategory;
@@ -714,4 +709,3 @@ export async function submitProductReview(reviewData: { product_id: number; revi
         throw error;
     }
 }
-
