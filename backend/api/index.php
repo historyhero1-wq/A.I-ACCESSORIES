@@ -50,6 +50,12 @@ switch ($module) {
     case 'admin':
         require_once __DIR__ . '/admin/handler.php';
         break;
+    case 'banners':
+        require_once __DIR__ . '/banners/handler.php';
+        break;
+    case 'settings':
+        require_once __DIR__ . '/settings/handler.php';
+        break;
     case 'uploads':
         require_once __DIR__ . '/uploads/handler.php';
         break;

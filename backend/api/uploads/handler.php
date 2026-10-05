@@ -85,16 +85,19 @@ function uploadVideoFile(array $file, string $uploadDir, string $publicBase, str
     return $publicBase . '/' . $fileName;
 }
 
-if ($action === 'categories') {
+if ($action === 'categories' || $action === 'banners') {
     if (empty($_FILES['image']) || $_FILES['image']['error'] === UPLOAD_ERR_NO_FILE) {
         http_response_code(400);
         echo json_encode(["message" => "No image uploaded."]);
         exit;
     }
 
-    $uploadDir = __DIR__ . '/../../uploads/categories';
-    $publicBase = $origin . $apiBase . '/uploads/categories';
-    $imageUrl = uploadImageFile($_FILES['image'], $uploadDir, $publicBase, 'category_');
+    $folder = $action === 'banners' ? 'banners' : 'categories';
+    $prefix = $action === 'banners' ? 'banner_' : 'category_';
+
+    $uploadDir = __DIR__ . '/../../uploads/' . $folder;
+    $publicBase = $origin . $apiBase . '/uploads/' . $folder;
+    $imageUrl = uploadImageFile($_FILES['image'], $uploadDir, $publicBase, $prefix);
 
     if (!$imageUrl) {
         http_response_code(500);

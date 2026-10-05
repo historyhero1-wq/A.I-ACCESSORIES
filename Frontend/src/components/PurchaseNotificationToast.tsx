@@ -3,50 +3,49 @@ import { Link } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { CheckCircle2, X } from "lucide-react";
 import { useProducts } from "@/hooks/useProducts";
-import type { Product } from "@/data/products";
+import { products as fallbackProducts, type Product } from "@/data/products";
 import { getProductUrl } from "@/lib/product-url";
 
 const PAKISTANI_NAMES = [
+  "Hamza",
+  "Ali",
+  "Usman",
+  "Bilal",
+  "Ahmed",
+  "Zeeshan",
+  "Hassan",
+  "Fahad",
+  "Saad",
+  "Muhammad",
   "Fatima",
   "Ayesha",
   "Zainab",
   "Maryam",
-  "Hira",
   "Sana",
-  "Amna",
   "Khadija",
-  "Noor",
-  "Hafsa",
-  "Areeba",
   "Mahnoor",
-  "Iqra",
-  "Rabia",
-  "Sadia",
-  "Nida",
-  "Bushra",
-  "Saima",
-  "Laiba",
-  "Mariam",
+  "Hira",
+  "Noor",
+  "Amna",
+  "Tariq",
+  "Omair",
 ] as const;
 
 const PAKISTANI_CITIES = [
-  "Karachi",
   "Lahore",
+  "Karachi",
   "Islamabad",
   "Rawalpindi",
   "Faisalabad",
   "Multan",
   "Peshawar",
-  "Quetta",
   "Sialkot",
   "Gujranwala",
   "Hyderabad",
+  "Quetta",
   "Abbottabad",
-  "Sukkur",
   "Bahawalpur",
-  "Mardan",
   "Gujrat",
-  "Mirpur",
   "Sargodha",
 ] as const;
 
@@ -73,19 +72,20 @@ function pickRandom<T>(arr: readonly T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-function buildNotification(products: Product[]): Notification | null {
-  if (products.length === 0) return null;
+function buildNotification(productsList: Product[]): Notification | null {
+  const source = productsList.length > 0 ? productsList : fallbackProducts;
+  if (source.length === 0) return null;
   return {
     id: Date.now() + Math.random(),
     name: pickRandom(PAKISTANI_NAMES),
     city: pickRandom(PAKISTANI_CITIES),
     timeAgo: pickRandom(TIME_AGO_PHRASES),
-    product: pickRandom(products),
+    product: pickRandom(source),
   };
 }
 
 function randomIntervalMs() {
-  return 22000 + Math.floor(Math.random() * 18000);
+  return 18000 + Math.floor(Math.random() * 14000);
 }
 
 function getInitial(name: string) {
@@ -121,8 +121,6 @@ const PurchaseNotificationToast = () => {
   }, [products, clearDismissTimer]);
 
   useEffect(() => {
-    if (isLoading || products.length === 0) return;
-
     const schedule = () => {
       scheduleTimerRef.current = setTimeout(() => {
         showNext();
@@ -133,18 +131,18 @@ const PurchaseNotificationToast = () => {
     const initialDelay = setTimeout(() => {
       showNext();
       schedule();
-    }, 10000);
+    }, 7000);
 
     return () => {
       clearTimeout(initialDelay);
       if (scheduleTimerRef.current) clearTimeout(scheduleTimerRef.current);
       clearDismissTimer();
     };
-  }, [isLoading, products, showNext, clearDismissTimer]);
+  }, [showNext, clearDismissTimer]);
 
   return (
     <div
-      className="pointer-events-none fixed top-24 right-3 z-[100] w-[min(calc(100vw-1.5rem),16.75rem)] sm:top-28 sm:right-5"
+      className="pointer-events-none fixed top-24 right-3 z-[100] w-[min(calc(100vw-1.5rem),17.5rem)] sm:top-28 sm:right-5"
       aria-live="polite"
     >
       <AnimatePresence mode="wait">
@@ -155,22 +153,22 @@ const PurchaseNotificationToast = () => {
             animate={{ opacity: 1, x: 0, y: 0 }}
             exit={{ opacity: 0, x: 20, y: 6, scale: 0.98 }}
             transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-            className="purchase-toast pointer-events-auto overflow-hidden rounded-xl bg-background"
+            className="purchase-toast pointer-events-auto overflow-hidden rounded-xl bg-background shadow-xl border border-border/80"
           >
             <div className="flex bg-foreground text-primary-foreground">
               <div className="flex min-w-0 flex-1 items-center gap-2 px-2.5 py-1.5">
-                <span className="relative flex h-1.5 w-1.5 shrink-0">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-50" />
-                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                <span className="relative flex h-2 w-2 shrink-0">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
                 </span>
-                <span className="truncate font-nav text-[9px] font-semibold uppercase tracking-wide">
-                  Someone just ordered
+                <span className="truncate font-nav text-[10px] font-bold uppercase tracking-wider text-emerald-300">
+                  ⚡ Someone Just Ordered
                 </span>
               </div>
               <button
                 type="button"
                 onClick={dismiss}
-                className="purchase-toast__close flex w-8 shrink-0 items-center justify-center text-white transition-all"
+                className="purchase-toast__close flex w-8 shrink-0 items-center justify-center text-white/80 hover:text-white transition-all"
                 aria-label="Dismiss notification"
               >
                 <X size={14} strokeWidth={2.5} />
@@ -202,7 +200,7 @@ const PurchaseNotificationToast = () => {
               </div>
 
               <div className="flex items-center gap-2.5 rounded-lg border border-border/60 bg-secondary/20 p-1.5 transition-colors group-hover:border-primary/20 group-hover:bg-secondary/35">
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-md bg-background p-1">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-md bg-white p-1 border border-border/40">
                   <img
                     src={notification.product.image}
                     alt={notification.product.name}
@@ -231,7 +229,7 @@ const PurchaseNotificationToast = () => {
             <div className="h-[2px] w-full overflow-hidden bg-border/40">
               <motion.div
                 key={`progress-${notification.id}`}
-                className="purchase-toast__progress h-full origin-left"
+                className="purchase-toast__progress h-full origin-left bg-emerald-500"
                 initial={{ scaleX: 1 }}
                 animate={{ scaleX: 0 }}
                 transition={{ duration: DISMISS_MS / 1000, ease: "linear" }}

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant:wght@500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Inter:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -7,51 +7,51 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 30 68% 11%;
+    --foreground: 0 0% 7%;
 
     --card: 0 0% 100%;
-    --card-foreground: 30 68% 11%;
+    --card-foreground: 0 0% 7%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 30 68% 11%;
+    --popover-foreground: 0 0% 7%;
 
-    --primary: 30 68% 11%;
+    --primary: 0 0% 7%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 0 0% 96%;
-    --secondary-foreground: 30 68% 11%;
+    --secondary-foreground: 0 0% 10%;
 
-    --muted: 0 0% 96%;
-    --muted-foreground: 30 18% 42%;
+    --muted: 0 0% 95%;
+    --muted-foreground: 0 0% 50%;
 
-    --accent: 30 68% 11%;
+    --accent: 220 90% 56%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 98%;
 
     --border: 0 0% 90%;
     --input: 0 0% 90%;
-    --ring: 30 68% 11%;
+    --ring: 220 90% 56%;
 
     --radius: 0.25rem;
 
-    --gold: 30 68% 11%;
-    --gold-light: 0 0% 100%;
-    --gold-dark: 30 68% 8%;
-    --cream: 0 0% 100%;
+    --gold: 45 100% 55%;
+    --gold-light: 45 100% 70%;
+    --gold-dark: 38 90% 42%;
+    --cream: 0 0% 98%;
     --cream-dark: 0 0% 94%;
-    --burgundy: 30 68% 11%;
-    --charcoal: 30 68% 11%;
+    --burgundy: 0 0% 7%;
+    --charcoal: 0 0% 12%;
 
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 30 68% 11%;
-    --sidebar-primary: 30 68% 11%;
+    --sidebar-background: 0 0% 7%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 220 90% 56%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 0 0% 96%;
-    --sidebar-accent-foreground: 30 68% 11%;
-    --sidebar-border: 0 0% 90%;
-    --sidebar-ring: 30 68% 11%;
+    --sidebar-accent: 0 0% 12%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 0 0% 18%;
+    --sidebar-ring: 220 90% 56%;
   }
 }
 
@@ -60,80 +60,63 @@
     @apply border-border;
   }
 
-  html,
-  body {
+  html, body {
     overflow-x: hidden;
     max-width: 100%;
   }
 
   body {
     @apply bg-background text-foreground text-base antialiased;
-    font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
     line-height: 1.6;
   }
 
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-family: 'Cormorant', Georgia, serif;
-    font-weight: 600;
-    line-height: 1.2;
-    letter-spacing: 0.01em;
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
   }
 
-  p,
-  li,
-  label,
-  input,
-  textarea,
-  select,
-  button {
-    font-family: inherit;
+  p, li, label, input, textarea, select, button {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
   }
 }
 
 @layer components {
   .font-display {
-    font-family: 'Cormorant', Georgia, serif;
-    font-weight: 600;
-    letter-spacing: 0.01em;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 700;
   }
 
   .font-body {
-    font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
-    letter-spacing: 0;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
   }
 
   .font-nav {
-    font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
     font-weight: 500;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.03em;
   }
 
   .text-label {
-    @apply font-nav text-xs font-semibold uppercase tracking-wide text-muted-foreground;
+    @apply font-nav text-xs font-semibold uppercase tracking-widest text-muted-foreground;
   }
 
   .gold-gradient {
-    background: linear-gradient(135deg, #2f1c09, #ffffff, #2f1c09);
+    background: linear-gradient(135deg, #1a1a2e, #4361ee);
   }
 
   .gold-text {
-    background: linear-gradient(135deg, #2f1c09, #5a3a1a, #2f1c09);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #4361ee;
   }
 
   .gold-border {
-    border-color: hsl(30 68% 11% / 0.3);
+    border-color: #4361ee;
   }
 
   .luxury-shadow {
-    box-shadow: 0 4px 30px hsl(30 68% 11% / 0.08);
+    box-shadow: 0 4px 30px rgba(0,0,0,0.08);
   }
 
   .category-marquee {
@@ -141,16 +124,17 @@
   }
 
   .nav-link {
-    @apply relative font-nav text-sm font-medium tracking-wide uppercase;
+    @apply relative font-nav text-sm font-medium tracking-wide;
+    color: #333;
   }
 
-  .nav-link::after {
-    content: '';
-    @apply absolute bottom-0 left-0 w-full h-[1px] bg-primary scale-x-0 origin-right transition-transform duration-500;
+  .nav-link:hover {
+    color: #4361ee;
   }
 
-  .nav-link:hover::after {
-    @apply scale-x-100 origin-left;
+  .nav-link.active {
+    color: #4361ee;
+    font-weight: 600;
   }
 
   .delivery-steps-card {
@@ -162,13 +146,7 @@
     position: absolute;
     z-index: 0;
     inset: -80%;
-    background: conic-gradient(
-      from 0deg,
-      hsl(30 68% 11% / 0.5) 0deg,
-      hsl(38 72% 48% / 0.6) 28deg,
-      transparent 56deg,
-      transparent 360deg
-    );
+    background: conic-gradient(from 0deg, rgba(67,97,238,0.5) 0deg, rgba(67,97,238,0.3) 28deg, transparent 56deg, transparent 360deg);
     animation: delivery-border-spin 2.8s linear infinite;
   }
 
@@ -177,75 +155,56 @@
   }
 
   .delivery-steps-line {
-    background: linear-gradient(
-      90deg,
-      hsl(var(--border)) 0%,
-      hsl(var(--border)) 35%,
-      hsl(30 68% 11% / 0.55) 50%,
-      hsl(38 72% 48% / 0.7) 55%,
-      hsl(var(--border)) 70%,
-      hsl(var(--border)) 100%
-    );
+    background: linear-gradient(90deg, hsl(var(--border)) 0%, hsl(var(--border)) 35%, rgba(67,97,238,0.5) 50%, rgba(67,97,238,0.7) 55%, hsl(var(--border)) 70%, hsl(var(--border)) 100%);
     background-size: 220% 100%;
     animation: delivery-line-sweep 2.8s linear infinite;
   }
 }
 
 @keyframes delivery-border-spin {
-  to {
-    transform: rotate(360deg);
-  }
+  to { transform: rotate(360deg); }
 }
 
 @keyframes delivery-line-sweep {
-  0% {
-    background-position: 120% 0;
-  }
-  100% {
-    background-position: -120% 0;
-  }
+  0% { background-position: 120% 0; }
+  100% { background-position: -120% 0; }
 }
 
 @keyframes category-marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-33.333%);
-  }
+  from { transform: translateX(0); }
+  to { transform: translateX(-33.333%); }
+}
+
+@keyframes float-bob {
+  0%, 100% { transform: translateY(0px) rotate(-2deg); }
+  50% { transform: translateY(-12px) rotate(2deg); }
+}
+
+.float-animation {
+  animation: float-bob 4s ease-in-out infinite;
 }
 
 @keyframes whatsapp-float-bob {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-7px);
-  }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-7px); }
 }
 
 .whatsapp-float {
   animation: whatsapp-float-bob 2.8s ease-in-out infinite;
-  transition:
-    transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
-    box-shadow 0.35s ease;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease;
 }
 
 .whatsapp-float-wrap:hover .whatsapp-float {
   animation-play-state: paused;
   transform: scale(1.1);
-  box-shadow:
-    0 8px 28px rgba(37, 211, 102, 0.55),
-    0 0 0 8px rgba(37, 211, 102, 0.15);
+  box-shadow: 0 8px 28px rgba(37, 211, 102, 0.55), 0 0 0 8px rgba(37, 211, 102, 0.15);
 }
 
 .whatsapp-float-wrap:hover .whatsapp-icon {
   animation: whatsapp-icon-wiggle 0.5s ease-in-out;
 }
 
-.whatsapp-ring,
-.whatsapp-ring-delay {
+.whatsapp-ring, .whatsapp-ring-delay {
   opacity: 0;
   pointer-events: none;
 }
@@ -259,34 +218,18 @@
 }
 
 @keyframes whatsapp-pulse-ring {
-  0% {
-    transform: scale(1);
-    opacity: 0.55;
-  }
-  100% {
-    transform: scale(1.65);
-    opacity: 0;
-  }
+  0% { transform: scale(1); opacity: 0.55; }
+  100% { transform: scale(1.65); opacity: 0; }
 }
 
 @keyframes whatsapp-icon-wiggle {
-  0%,
-  100% {
-    transform: rotate(0deg);
-  }
-  25% {
-    transform: rotate(-12deg) scale(1.08);
-  }
-  75% {
-    transform: rotate(12deg) scale(1.08);
-  }
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-12deg) scale(1.08); }
+  75% { transform: rotate(12deg) scale(1.08); }
 }
 
 .purchase-toast {
-  box-shadow:
-    0 4px 6px -1px hsl(30 68% 11% / 0.06),
-    0 12px 28px -4px hsl(30 68% 11% / 0.12),
-    0 0 0 1px hsl(30 68% 11% / 0.04);
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.06), 0 12px 28px -4px rgba(67,97,238,0.12), 0 0 0 1px rgba(67,97,238,0.04);
 }
 
 .purchase-toast__close {
@@ -298,16 +241,12 @@
 }
 
 .purchase-toast__progress {
-  background: linear-gradient(90deg, hsl(30 68% 11%), hsl(38 52% 42%), hsl(30 68% 11%));
+  background: linear-gradient(90deg, #1a1a2e, #4361ee, #1a1a2e);
   background-size: 200% 100%;
   animation: purchase-toast-shimmer 2s linear infinite;
 }
 
 @keyframes purchase-toast-shimmer {
-  0% {
-    background-position: 100% 0;
-  }
-  100% {
-    background-position: -100% 0;
-  }
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
 }

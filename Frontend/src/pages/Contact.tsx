@@ -188,9 +188,7 @@ const Contact = () => {
               <p className="mb-4 font-body text-sm text-muted-foreground">
                 New arrivals, offers, and style inspiration on our social channels.
               </p>
-              <SocialLinks
-                iconClassName="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background text-foreground/70 transition-colors hover:border-primary hover:text-primary"
-              />
+              <SocialLinks variant="colored" size="lg" />
             </div>
           </motion.div>
 

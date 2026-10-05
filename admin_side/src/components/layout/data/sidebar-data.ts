@@ -8,6 +8,8 @@ import {
   Timer,
   FolderTree,
   ClipboardList,
+  Image as ImageIcon,
+  Globe,
 } from 'lucide-react'
 import { type SidebarData } from '../types'
 
@@ -32,6 +34,11 @@ export const sidebarData: SidebarData = {
           title: 'Dashboard',
           url: '/',
           icon: LayoutDashboard,
+        },
+        {
+          title: 'Hero Banners',
+          url: '/banners',
+          icon: ImageIcon,
         },
         {
           title: 'Products',
@@ -80,6 +87,11 @@ export const sidebarData: SidebarData = {
           title: 'Users',
           url: '/users',
           icon: Users,
+        },
+        {
+          title: 'Site Settings',
+          url: '/settings/site',
+          icon: Globe,
         },
         {
           title: 'Sale Countdown',

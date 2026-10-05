@@ -7,7 +7,14 @@ import { useProducts } from "@/hooks/useProducts";
 import { cn } from "@/lib/utils";
 import { getProductUrl } from "@/lib/product-url";
 
-const QUICK_SEARCHES = ["Handbag", "Tote", "Crossbody", "Wallet"];
+const QUICK_SEARCHES = [
+  "iPhone Covers",
+  "Fast Chargers",
+  "Wireless Earbuds",
+  "Power Banks",
+  "Type-C Cables",
+  "Screen Protectors",
+];
 
 type NavSearchProps = {
   className?: string;

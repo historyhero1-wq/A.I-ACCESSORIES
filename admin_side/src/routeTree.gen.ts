@@ -29,6 +29,7 @@ import { Route as AuthenticatedProductsIndexRouteImport } from './routes/_authen
 import { Route as AuthenticatedOrdersIndexRouteImport } from './routes/_authenticated/orders/index'
 import { Route as AuthenticatedCheckoutDraftsIndexRouteImport } from './routes/_authenticated/checkout-drafts/index'
 import { Route as AuthenticatedCategoriesIndexRouteImport } from './routes/_authenticated/categories/index'
+import { Route as AuthenticatedBannersIndexRouteImport } from './routes/_authenticated/banners/index'
 import { Route as AuthenticatedTrackingSessionsRouteImport } from './routes/_authenticated/tracking/sessions'
 import { Route as AuthenticatedTrackingPageAnalyticsRouteImport } from './routes/_authenticated/tracking/page-analytics'
 import { Route as AuthenticatedTrackingLiveRouteImport } from './routes/_authenticated/tracking/live'
@@ -148,6 +149,12 @@ const AuthenticatedCategoriesIndexRoute =
     path: '/categories/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedBannersIndexRoute =
+  AuthenticatedBannersIndexRouteImport.update({
+    id: '/banners/',
+    path: '/banners/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedTrackingSessionsRoute =
   AuthenticatedTrackingSessionsRouteImport.update({
     id: '/tracking/sessions',
@@ -245,6 +252,7 @@ export interface FileRoutesByFullPath {
   '/tracking/live': typeof AuthenticatedTrackingLiveRoute
   '/tracking/page-analytics': typeof AuthenticatedTrackingPageAnalyticsRoute
   '/tracking/sessions': typeof AuthenticatedTrackingSessionsRoute
+  '/banners/': typeof AuthenticatedBannersIndexRoute
   '/categories/': typeof AuthenticatedCategoriesIndexRoute
   '/checkout-drafts/': typeof AuthenticatedCheckoutDraftsIndexRoute
   '/orders/': typeof AuthenticatedOrdersIndexRoute
@@ -277,6 +285,7 @@ export interface FileRoutesByTo {
   '/tracking/live': typeof AuthenticatedTrackingLiveRoute
   '/tracking/page-analytics': typeof AuthenticatedTrackingPageAnalyticsRoute
   '/tracking/sessions': typeof AuthenticatedTrackingSessionsRoute
+  '/banners': typeof AuthenticatedBannersIndexRoute
   '/categories': typeof AuthenticatedCategoriesIndexRoute
   '/checkout-drafts': typeof AuthenticatedCheckoutDraftsIndexRoute
   '/orders': typeof AuthenticatedOrdersIndexRoute
@@ -312,6 +321,7 @@ export interface FileRoutesById {
   '/_authenticated/tracking/live': typeof AuthenticatedTrackingLiveRoute
   '/_authenticated/tracking/page-analytics': typeof AuthenticatedTrackingPageAnalyticsRoute
   '/_authenticated/tracking/sessions': typeof AuthenticatedTrackingSessionsRoute
+  '/_authenticated/banners/': typeof AuthenticatedBannersIndexRoute
   '/_authenticated/categories/': typeof AuthenticatedCategoriesIndexRoute
   '/_authenticated/checkout-drafts/': typeof AuthenticatedCheckoutDraftsIndexRoute
   '/_authenticated/orders/': typeof AuthenticatedOrdersIndexRoute
@@ -347,6 +357,7 @@ export interface FileRouteTypes {
     | '/tracking/live'
     | '/tracking/page-analytics'
     | '/tracking/sessions'
+    | '/banners/'
     | '/categories/'
     | '/checkout-drafts/'
     | '/orders/'
@@ -379,6 +390,7 @@ export interface FileRouteTypes {
     | '/tracking/live'
     | '/tracking/page-analytics'
     | '/tracking/sessions'
+    | '/banners'
     | '/categories'
     | '/checkout-drafts'
     | '/orders'
@@ -413,6 +425,7 @@ export interface FileRouteTypes {
     | '/_authenticated/tracking/live'
     | '/_authenticated/tracking/page-analytics'
     | '/_authenticated/tracking/sessions'
+    | '/_authenticated/banners/'
     | '/_authenticated/categories/'
     | '/_authenticated/checkout-drafts/'
     | '/_authenticated/orders/'
@@ -579,6 +592,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCategoriesIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/banners/': {
+      id: '/_authenticated/banners/'
+      path: '/banners'
+      fullPath: '/banners/'
+      preLoaderRoute: typeof AuthenticatedBannersIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/tracking/sessions': {
       id: '/_authenticated/tracking/sessions'
       path: '/tracking/sessions'
@@ -701,6 +721,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedTrackingLiveRoute: typeof AuthenticatedTrackingLiveRoute
   AuthenticatedTrackingPageAnalyticsRoute: typeof AuthenticatedTrackingPageAnalyticsRoute
   AuthenticatedTrackingSessionsRoute: typeof AuthenticatedTrackingSessionsRoute
+  AuthenticatedBannersIndexRoute: typeof AuthenticatedBannersIndexRoute
   AuthenticatedCategoriesIndexRoute: typeof AuthenticatedCategoriesIndexRoute
   AuthenticatedCheckoutDraftsIndexRoute: typeof AuthenticatedCheckoutDraftsIndexRoute
   AuthenticatedOrdersIndexRoute: typeof AuthenticatedOrdersIndexRoute
@@ -720,6 +741,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedTrackingPageAnalyticsRoute:
     AuthenticatedTrackingPageAnalyticsRoute,
   AuthenticatedTrackingSessionsRoute: AuthenticatedTrackingSessionsRoute,
+  AuthenticatedBannersIndexRoute: AuthenticatedBannersIndexRoute,
   AuthenticatedCategoriesIndexRoute: AuthenticatedCategoriesIndexRoute,
   AuthenticatedCheckoutDraftsIndexRoute: AuthenticatedCheckoutDraftsIndexRoute,
   AuthenticatedOrdersIndexRoute: AuthenticatedOrdersIndexRoute,

@@ -201,7 +201,7 @@ function resolveImageUrl(image: string) {
     const uploadBase = API_BASE_URL.replace(/\/api\/?$/, '');
 
     // Rewrite stored localhost/xampp URLs or relative uploads to current upload base
-    const uploadsPath = image.match(/\/uploads\/(?:categories|products)\/[^\s?#]+/i);
+    const uploadsPath = image.match(/\/uploads\/(?:categories|products|banners)\/[^\s?#]+/i);
     if (uploadsPath) {
         return `${uploadBase}${uploadsPath[0]}`;
     }

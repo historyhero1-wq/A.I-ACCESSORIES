@@ -1,241 +1,301 @@
-import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { CONTACT } from "@/lib/contact";
+import { Shield, RotateCcw, AlertCircle, Package, Zap, Headphones, Truck, PhoneCall, Video, X, CheckCircle2, FileText, UserCheck } from "lucide-react";
 
-const faqSections = [
+const policies = [
   {
-    title: "Shipping & Delivery",
-    items: [
-      {
-        q: "How long will it take to receive my order?",
-        a: "Orders are typically processed within 24–48 hours. Depending on your location within Pakistan, delivery usually takes 3–5 business days.",
-      },
-      {
-        q: "Can I track my order?",
-        a: "Yes! Once your order is dispatched, you will receive a tracking number via email or SMS, which you can use to monitor your package's progress.",
-      },
-    ],
+    id: "returns",
+    icon: <RotateCcw className="h-5 w-5" />,
+    number: "01",
+    title: "Return & Exchange",
+    content:
+      "Defective, damaged, or incorrectly delivered products may be returned or exchanged within 24 hours of delivery.",
+    type: "info",
   },
   {
-    title: "Products & Quality",
-    items: [
-      {
-        q: "What materials are used in Craftie._.Area products?",
-        a: "We prioritize durability and aesthetics. Each product description contains specific details about the materials (e.g., premium synthetic leather, heavy-duty hardware) to ensure you know exactly what you are purchasing.",
-      },
-      {
-        q: "How do I clean and maintain my items?",
-        a: "To keep your Craftie._.Area piece looking new, we recommend wiping it down with a soft, damp cloth. Avoid harsh chemicals or prolonged exposure to direct sunlight. For specific material care, please refer to the care instructions included with your purchase.",
-      },
-    ],
+    id: "condition",
+    icon: <Package className="h-5 w-5" />,
+    number: "02",
+    title: "Return Condition",
+    content:
+      "Products must be unused, undamaged and in their original packaging with all accessories included.",
+    type: "info",
   },
   {
-    title: "Returns & Exchanges",
-    items: [
-      {
-        q: "What is your exchange policy?",
-        a: "We want you to be completely happy with your purchase. If you would like to exchange your item for a different color or model, you may do so within 7 days of receipt. Please ensure the item is in its original, unused condition with all tags attached.",
-      },
-      {
-        q: "Do you offer refunds?",
-        a: "We offer exchanges only. We do not provide cash refunds for returned items. We are committed to ensuring you receive a product you love, and we are happy to assist you in selecting an alternative item from our collection.",
-      },
-      {
-        q: "What if I receive a damaged item?",
-        a: "We take great care in inspecting our products before they reach you. In the unlikely event that you receive a damaged or incorrect item, please notify us within 24 hours of delivery. We will facilitate an exchange for the same item in perfect condition immediately.",
-      },
-      {
-        q: "Who covers the shipping cost for exchanges?",
-        a: "For standard exchanges (change of mind/preference), the customer is responsible for the return shipping costs. If the exchange is due to a mistake on our end or a damaged product, Craftie._.Area will cover the shipping expenses.",
-      },
-    ],
+    id: "mind",
+    icon: <X className="h-5 w-5" />,
+    number: "03",
+    title: "Change of Mind",
+    content:
+      "Returns are not accepted due to change of mind, wrong selection, or personal preference.",
+    type: "warning",
   },
   {
-    title: "Payments",
-    items: [
-      {
-        q: "What payment methods do you accept?",
-        a: "We make payments easy and secure. We accept direct bank transfers, mobile wallets, and cash on delivery (COD).",
-      },
-    ],
+    id: "compatibility",
+    icon: <AlertCircle className="h-5 w-5" />,
+    number: "04",
+    title: "Product Compatibility",
+    content:
+      "Customers are responsible for confirming the correct mobile model and product compatibility before ordering.",
+    type: "warning",
   },
   {
-    title: "General",
-    items: [
-      {
-        q: "How can I contact Craftie._.Area customer support?",
-        a: `We are here to help! You can reach us at ${CONTACT.email.address} or message us on WhatsApp at ${CONTACT.whatsapp.display}. We strive to respond to all inquiries within 24 hours.`,
-      },
-    ],
+    id: "used",
+    icon: <Shield className="h-5 w-5" />,
+    number: "05",
+    title: "Installed / Used Products",
+    content:
+      "Installed, opened, modified or used products are generally not eligible for return or exchange.",
+    type: "warning",
+  },
+  {
+    id: "electronics",
+    icon: <Zap className="h-5 w-5" />,
+    number: "06",
+    title: "Electronic Accessories",
+    content:
+      "Chargers, cables, hands-free devices, earbuds, power banks and similar items should be tested immediately after delivery. Any issue must be reported within 24 hours.",
+    type: "important",
+  },
+  {
+    id: "warranty",
+    icon: <CheckCircle2 className="h-5 w-5" />,
+    number: "07",
+    title: "Warranty",
+    content:
+      "Warranty, where applicable, covers manufacturing defects only. Physical damage, water damage, misuse, burning, tampering or unauthorized repair is NOT covered.",
+    type: "info",
+  },
+  {
+    id: "damage",
+    icon: <Truck className="h-5 w-5" />,
+    number: "08",
+    title: "Delivery Damage",
+    content:
+      "Customers should take clear photos/videos of the parcel and product if any damage is noticed and contact us within 24 hours.",
+    type: "important",
+  },
+  {
+    id: "wrong",
+    icon: <AlertCircle className="h-5 w-5" />,
+    number: "09",
+    title: "Wrong or Missing Item",
+    content:
+      "Any wrong or missing item must be reported within 24 hours with relevant photos/videos for verification.",
+    type: "important",
+  },
+  {
+    id: "unboxing",
+    icon: <Video className="h-5 w-5" />,
+    number: "10",
+    title: "Unboxing Video",
+    content:
+      "For electronic or expensive products, customers are strongly advised to record a complete unboxing video for claim verification.",
+    type: "info",
+  },
+  {
+    id: "cancellation",
+    icon: <X className="h-5 w-5" />,
+    number: "11",
+    title: "Order Cancellation",
+    content:
+      "Orders can be cancelled before dispatch. Once dispatched, cancellation may not be possible.",
+    type: "info",
+  },
+  {
+    id: "customer-info",
+    icon: <UserCheck className="h-5 w-5" />,
+    number: "12",
+    title: "Customer Information",
+    content:
+      "Customers are responsible for providing the correct name, phone number, address and mobile model at the time of ordering.",
+    type: "info",
+  },
+  {
+    id: "verification",
+    icon: <FileText className="h-5 w-5" />,
+    number: "13",
+    title: "Claim Verification",
+    content:
+      "All return, exchange and warranty claims are subject to verification and approval by A.I Mobile Accessories.",
+    type: "info",
+  },
+  {
+    id: "acceptance",
+    icon: <CheckCircle2 className="h-5 w-5" />,
+    number: "14",
+    title: "Policy Acceptance",
+    content:
+      "By placing an order, the customer confirms that they have read and accepted these policies.",
+    type: "important",
   },
 ];
 
-const policySections = [
-  {
-    id: "shipping",
-    title: "Shipping Policy",
-    points: [
-      "Processing Time: All orders are processed within 24–48 hours (excluding Sundays).",
-      "Delivery Time: Estimated delivery within Pakistan is 3–5 business days.",
-      "Shipping Charges: Shipping charges vary based on the destination, package weight, and chosen courier service. The final shipping cost will be calculated and displayed during the checkout process before you finalize your payment.",
-      "Tracking: You will receive a tracking link via SMS or email as soon as your order is dispatched.",
-    ],
+const typeConfig = {
+  info: {
+    border: "border-border",
+    iconBg: "bg-foreground",
+    iconColor: "text-[#f5c518]",
+    numberColor: "text-foreground/20",
   },
-  {
-    id: "exchange",
-    title: "Exchange Policy",
-    points: [
-      "Eligibility: We want you to be satisfied with your purchase. If you would like to exchange your item for a different color or model, you may do so within 7 days of receipt.",
-      "Condition: Items must be in their original, unused condition with all tags attached and in the original packaging.",
-      "Exchange-Only: We offer exchanges only. We do not provide cash refunds.",
-      "Damaged/Incorrect Items: If you receive a damaged or incorrect product, please notify us within 24 hours of delivery. We will facilitate an exchange for the same item at no additional cost to you.",
-      "Standard Exchanges: For exchanges based on personal preference (e.g., color or model change), the customer is responsible for return shipping costs.",
-    ],
+  warning: {
+    border: "border-orange-200",
+    iconBg: "bg-orange-50",
+    iconColor: "text-orange-500",
+    numberColor: "text-orange-100",
   },
-  {
-    id: "privacy",
-    title: "Privacy Policy",
-    points: [
-      "At Craftie._.Area, your privacy is our priority. This policy outlines how we collect, use, and protect your information.",
-      "Information We Collect: We collect information you provide directly, such as your name, shipping/billing address, email address, and phone number when you place an order. We also collect technical data (like IP addresses) to improve your website experience.",
-      "How We Use Your Information: We use your data to process and fulfill your orders, communicate with you regarding your order status, and improve our store's performance.",
-      "Data Sharing: We do not sell your personal information. We only share data with necessary third parties, such as shipping carriers to deliver your products and payment gateways to process your transactions securely.",
-      "Security: We take reasonable steps to protect your data.",
-      `Your Rights: You have the right to request access to or deletion of the personal information we hold about you. Contact us at ${CONTACT.email.address} to make such a request.`,
-      "Policy Updates: We may update this policy periodically. The revised version will be posted on our website.",
-    ],
+  important: {
+    border: "border-yellow-200",
+    iconBg: "",
+    iconColor: "text-[#0a0a0a]",
+    numberColor: "text-yellow-100",
   },
-];
+};
 
 const Policies = () => {
   return (
-    <>
-      <section className="border-b border-border bg-gradient-to-b from-muted/40 to-background py-16 md:py-20">
-        <div className="container">
+    <div className="min-h-screen bg-background">
+      {/* Hero Header */}
+      <div
+        className="relative overflow-hidden py-16 sm:py-20"
+        style={{ background: "linear-gradient(135deg, #0a0a0a 0%, #111 50%, #0a0a0a 100%)" }}
+      >
+        <div className="absolute inset-0 tech-bg opacity-30" />
+        <div
+          className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-32 opacity-20 blur-3xl rounded-full"
+          style={{ background: "#f5c518" }}
+        />
+        <div className="container relative z-10 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mx-auto max-w-3xl text-center"
+            transition={{ duration: 0.6 }}
           >
-            <p className="text-label mb-3">Customer information</p>
-            <h1 className="mb-5 font-display text-4xl text-foreground md:text-5xl">
-              Policies &amp; FAQ
+            <div
+              className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-bold tracking-widest uppercase mb-4 border"
+              style={{
+                background: "rgba(245,197,24,0.1)",
+                borderColor: "rgba(245,197,24,0.3)",
+                color: "#f5c518",
+              }}
+            >
+              <Shield className="h-3 w-3" />
+              A.I Mobile Accessories
+            </div>
+            <h1
+              className="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 tracking-wide"
+            >
+              Return &{" "}
+              <span className="gold-shimmer-text">Customer Policies</span>
             </h1>
-            <p className="font-body text-base leading-relaxed text-muted-foreground md:text-lg">
-              Everything you need to know about shipping, exchanges, payments, and how we
-              protect your privacy at Craftie._.Area.
+            <p className="font-body text-sm sm:text-base max-w-lg mx-auto" style={{ color: "rgba(255,255,255,0.6)" }}>
+              Please read our policies carefully before placing an order. Your satisfaction is our priority.
             </p>
           </motion.div>
         </div>
-      </section>
+        <div
+          className="absolute bottom-0 left-0 right-0 h-[2px]"
+          style={{ background: "linear-gradient(90deg, transparent, #f5c518, transparent)" }}
+        />
+      </div>
 
-      <section className="container py-14 md:py-16">
-        <div className="mx-auto max-w-3xl">
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-10 flex flex-wrap justify-center gap-2"
-          >
-            {[
-              { label: "FAQ", href: "#faq" },
-              { label: "Shipping", href: "#shipping" },
-              { label: "Exchange", href: "#exchange" },
-              { label: "Privacy", href: "#privacy" },
-            ].map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                className="rounded-full border border-border px-4 py-1.5 font-nav text-[10px] uppercase tracking-wide text-foreground/80 transition-colors hover:border-primary hover:text-primary"
-              >
-                {item.label}
-              </a>
-            ))}
-          </motion.div>
-
-          <div id="faq" className="scroll-mt-28">
-            <h2 className="mb-8 font-display text-3xl text-foreground">Craftie._.Area FAQ</h2>
-            <div className="space-y-10">
-              {faqSections.map((section) => (
-                <div key={section.title}>
-                  <h3 className="mb-4 font-nav text-sm font-bold uppercase tracking-wide text-primary">
-                    {section.title}
-                  </h3>
-                  <div className="space-y-3">
-                    {section.items.map((item) => (
-                      <details
-                        key={item.q}
-                        className="group rounded-xl border border-border bg-background px-5 py-4 open:shadow-sm"
-                      >
-                        <summary className="cursor-pointer list-none font-body text-sm font-semibold text-foreground [&::-webkit-details-marker]:hidden">
-                          {item.q}
-                        </summary>
-                        <p className="mt-3 font-body text-sm leading-relaxed text-muted-foreground">
-                          {item.a}
-                        </p>
-                      </details>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="border-t border-border bg-muted/15 py-14 md:py-16">
-        <div className="container">
-          <div className="mx-auto max-w-3xl space-y-12">
-            {policySections.map((section, index) => (
+      {/* Policy Cards */}
+      <div className="container py-12 md:py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
+          {policies.map((policy, i) => {
+            const config = typeConfig[policy.type as keyof typeof typeConfig];
+            const isImportant = policy.type === "important";
+            return (
               <motion.div
-                key={section.id}
-                id={section.id}
-                initial={{ opacity: 0, y: 16 }}
+                key={policy.id}
+                initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: index * 0.05 }}
-                className="scroll-mt-28 rounded-2xl border border-border bg-background p-6 md:p-8"
+                transition={{ delay: i * 0.05 }}
+                className={`relative overflow-hidden rounded-2xl border bg-white p-5 sm:p-6 transition-all duration-300 hover:shadow-md ${config.border}`}
+                style={isImportant ? {
+                  background: "linear-gradient(135deg, #fefce8, #fffbeb)",
+                  borderColor: "rgba(245,197,24,0.3)",
+                } : {}}
               >
-                <h2 className="mb-5 font-display text-2xl text-foreground">{section.title}</h2>
-                <ul className="space-y-3">
-                  {section.points.map((point) => (
-                    <li
-                      key={point}
-                      className="font-body text-sm leading-relaxed text-muted-foreground before:mr-2 before:text-primary before:content-['•']"
-                    >
-                      {point}
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+                {/* Number watermark */}
+                <span
+                  className={`absolute right-4 top-3 font-display text-5xl font-bold select-none ${config.numberColor}`}
+                >
+                  {policy.number}
+                </span>
 
-      <section className="container pb-16 pt-4">
-        <div className="mx-auto max-w-3xl rounded-2xl border border-primary/20 bg-primary/5 px-6 py-8 text-center md:px-10">
-          <p className="font-body text-sm text-muted-foreground md:text-base">
-            Still have questions? Our team is happy to help.
-          </p>
-          <div className="mt-4 flex flex-wrap items-center justify-center gap-4">
-            <Link
-              to="/contact"
-              className="font-nav text-xs uppercase tracking-wide text-primary hover:underline"
-            >
-              Contact us
-            </Link>
-            <a
-              href={CONTACT.whatsapp.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-nav text-xs uppercase tracking-wide text-primary hover:underline"
-            >
-              WhatsApp support
-            </a>
-          </div>
+                <div className="flex items-start gap-4">
+                  <div
+                    className={`shrink-0 flex h-10 w-10 items-center justify-center rounded-xl ${
+                      isImportant ? "" : config.iconBg
+                    } ${config.iconColor}`}
+                    style={isImportant ? {
+                      background: "linear-gradient(135deg, #f5c518, #d4a017)",
+                      boxShadow: "0 4px 12px rgba(245,197,24,0.3)",
+                    } : {}}
+                  >
+                    {policy.icon}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-display text-base font-bold text-foreground mb-1">
+                      {policy.title}
+                    </h3>
+                    <p className="font-body text-sm text-muted-foreground leading-relaxed">
+                      {policy.content}
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
-      </section>
-    </>
+
+        {/* Bottom Statement */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mt-12 rounded-3xl overflow-hidden"
+          style={{ background: "linear-gradient(135deg, #0a0a0a, #111)" }}
+        >
+          <div className="relative p-8 sm:p-10 text-center">
+            <div className="absolute inset-0 tech-bg opacity-20" />
+            <div
+              className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-20 opacity-20 blur-2xl rounded-full"
+              style={{ background: "#f5c518" }}
+            />
+            <div className="relative z-10">
+              <p
+                className="font-display text-2xl sm:text-3xl font-bold text-white mb-2"
+              >
+                <span className="gold-shimmer-text">A.I Mobile Accessories</span>
+              </p>
+              <p className="font-nav text-sm tracking-widest uppercase mb-6" style={{ color: "rgba(245,197,24,0.7)" }}>
+                Quality Products • Honest Service • Customer Satisfaction
+              </p>
+              <p className="font-body text-sm max-w-xl mx-auto mb-6" style={{ color: "rgba(255,255,255,0.5)" }}>
+                For any questions regarding returns, exchanges, or warranty claims, please contact us directly.
+              </p>
+              <a
+                href={CONTACT.whatsapp.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-xl px-6 py-3 font-nav text-sm font-bold tracking-wide uppercase transition-all duration-300 hover:scale-105"
+                style={{
+                  background: "linear-gradient(135deg, #f5c518, #d4a017)",
+                  color: "#0a0a0a",
+                  boxShadow: "0 4px 20px rgba(245,197,24,0.35)",
+                }}
+              >
+                <PhoneCall className="h-4 w-4" />
+                Contact Us on WhatsApp
+              </a>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </div>
   );
 };
 

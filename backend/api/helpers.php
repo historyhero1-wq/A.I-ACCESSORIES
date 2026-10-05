@@ -38,7 +38,7 @@ function normalize_upload_url(?string $url): ?string
 
     $url = trim($url);
 
-    if (preg_match('#/uploads/(?:categories|products)/[^\s?#]+#i', $url, $matches)) {
+    if (preg_match('~/uploads/(?:categories|products)/[^\s?#]+~i', $url, $matches)) {
         return public_upload_origin() . $matches[0];
     }
 

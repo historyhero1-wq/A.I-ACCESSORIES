@@ -13,7 +13,7 @@ export function resolveImageUrl(image: string): string {
 
   const uploadBase = apiBaseUrl.replace(/\/api\/?$/, '')
 
-  const uploadsPath = image.match(/\/uploads\/(?:categories|products)\/[^\s?#]+/i)
+  const uploadsPath = image.match(/\/uploads\/(?:categories|products|banners)\/[^\s?#]+/i)
   if (uploadsPath) {
     return `${uploadBase}${uploadsPath[0]}`
   }

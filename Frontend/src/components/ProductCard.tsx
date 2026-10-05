@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Star } from "lucide-react";
+import { Star, ShoppingCart } from "lucide-react";
 import { Product } from "@/data/products";
 import { cn } from "@/lib/utils";
 import { getProductUrl } from "@/lib/product-url";
@@ -28,116 +28,118 @@ const ProductCard = ({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.6, delay: index * 0.1 }}
-      className="w-full min-w-0 overflow-hidden text-center"
+      transition={{ duration: 0.4, delay: Math.min(index * 0.06, 0.4) }}
+      className="group w-full min-w-0 overflow-hidden rounded-2xl bg-white border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300"
     >
-      <div className={cn("relative overflow-hidden", compact ? "mb-1.5" : "mb-4")}>
+      {/* Image area */}
+      <div className="relative overflow-hidden bg-gray-50">
+        {/* Discount badge */}
         {product.isSoldOut || !product.inStock ? (
-          <span
-            className={cn(
-              "absolute left-2 top-2 z-10 rounded-full bg-foreground font-nav font-bold uppercase tracking-normal text-background shadow",
-              compact ? "px-2 py-0.5 text-[9px] sm:text-[10px]" : "px-3 py-1 text-[10px] sm:text-xs"
-            )}
-          >
-            {product.isSoldOut ? "Sold Out" : "Out of stock"}
+          <span className="absolute left-2.5 top-2.5 z-10 rounded-full bg-gray-700 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-white shadow">
+            {product.isSoldOut ? "Sold Out" : "Out of Stock"}
           </span>
         ) : discountPercent != null ? (
-          <span
-            className={cn(
-              "absolute left-2 top-2 z-10 rounded-full bg-primary font-nav font-bold uppercase tracking-normal text-primary-foreground shadow",
-              compact ? "px-2 py-0.5 text-[9px] sm:text-[10px]" : "px-3 py-1 text-[10px] sm:text-xs"
-            )}
-          >
-            OFF {discountPercent}%
+          <span className="absolute left-2.5 top-2.5 z-10 rounded-full bg-red-500 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-white shadow">
+            -{discountPercent}%
           </span>
         ) : null}
+
+        {/* Favorite button */}
         <FavoriteHeartButton
           favorited={favorited}
           onToggle={() => toggleFavorite(product)}
-          size={16}
+          size={14}
           className={cn(
-            "absolute right-2 top-2 z-10 h-9 w-9 rounded-full border bg-background/90 transition-colors",
+            "absolute right-2.5 top-2.5 z-10 h-8 w-8 rounded-full border bg-white/90 backdrop-blur-sm shadow-sm transition-all",
             favorited
-              ? "border-red-500/40 text-foreground/70"
-              : "border-border text-foreground/70 hover:border-red-400 hover:text-red-400"
+              ? "border-red-200 text-red-500"
+              : "border-gray-200 text-gray-400 hover:border-red-200 hover:text-red-500"
           )}
         />
-        <Link to={getProductUrl(product)} className="block w-full">
+
+        {/* Product image */}
+        <Link to={getProductUrl(product)} className="block">
           <div
             className={cn(
-              "flex w-full items-center justify-center overflow-hidden bg-background",
-              compact ? "aspect-square p-1.5 sm:p-2" : "aspect-[4/3]"
+              "flex w-full items-center justify-center overflow-hidden bg-gray-50",
+              compact ? "aspect-square" : "aspect-[4/3]"
             )}
           >
             <img
               src={product.image}
               alt={product.name}
-              className="max-h-full max-w-full object-contain"
+              className="h-full w-full object-contain p-2 transition-transform duration-500 group-hover:scale-108"
+              style={{ transform: "scale(1)" }}
+              onMouseEnter={(e) => { e.currentTarget.style.transform = "scale(1.06)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.transform = "scale(1)"; }}
             />
           </div>
         </Link>
       </div>
 
-      <Link to={getProductUrl(product)}>
-        <h3
-          className={cn(
-            "font-display font-semibold leading-snug text-foreground",
-            compact
-              ? "mb-1 line-clamp-2 text-sm md:text-base"
-              : "mb-2 min-h-6 text-lg md:text-xl"
-          )}
-        >
-          {product.name}
-        </h3>
-
-        {reviewCount > 0 ? (
-          <div
+      {/* Info area */}
+      <div className="p-3 sm:p-3.5">
+        <Link to={getProductUrl(product)}>
+          {/* Product name */}
+          <h3
             className={cn(
-              "flex items-center justify-center gap-0.5 text-amber-400",
-              compact ? "mb-1" : "mb-2"
+              "font-semibold leading-snug text-gray-900 hover:text-blue-600 transition-colors",
+              compact
+                ? "mb-1.5 line-clamp-2 text-xs sm:text-sm"
+                : "mb-2 text-base sm:text-lg"
             )}
           >
-            {[...Array(5)].map((_, i) => (
-              <Star
-                key={i}
-                size={compact ? 11 : 13}
-                className={i < roundedRating ? "fill-current" : "text-muted-foreground/30"}
-              />
-            ))}
-            <span className="ml-1 font-body text-[11px] text-foreground/70 md:text-xs">
-              {rating.toFixed(1)} ({reviewCount})
-            </span>
-          </div>
-        ) : (
-          <div className={cn("font-body text-xs text-muted-foreground", compact ? "mb-1" : "mb-2")}>
-            No reviews yet
-          </div>
-        )}
+            {product.name}
+          </h3>
 
-        <div className="flex flex-col items-center justify-center gap-0.5">
-          {product.originalPrice && product.originalPrice > product.price && (
+          {/* Star rating */}
+          {reviewCount > 0 && (
+            <div className={cn("flex items-center gap-1", compact ? "mb-1.5" : "mb-2")}>
+              <div className="flex items-center gap-0.5">
+                {[...Array(5)].map((_, i) => (
+                  <Star
+                    key={i}
+                    size={compact ? 10 : 12}
+                    className={
+                      i < roundedRating
+                        ? "fill-amber-400 text-amber-400"
+                        : "text-gray-200 fill-gray-200"
+                    }
+                  />
+                ))}
+              </div>
+              <span className="text-[10px] text-gray-400">
+                {rating.toFixed(1)} ({reviewCount})
+              </span>
+            </div>
+          )}
+
+          {/* Price */}
+          <div className="flex items-center gap-1.5 flex-wrap">
             <span
               className={cn(
-                "font-body text-destructive line-through decoration-destructive/70",
-                compact ? "text-xs" : "text-sm"
+                "font-bold text-gray-900",
+                compact ? "text-sm" : "text-base sm:text-lg"
               )}
             >
-              Rs. {product.originalPrice.toLocaleString()}
+              Rs. {product.price.toLocaleString()}
             </span>
-          )}
-          <span
-            className={cn(
-              "font-body font-semibold text-foreground",
-              compact ? "text-sm md:text-base" : "text-base md:text-lg"
+            {product.originalPrice && product.originalPrice > product.price && (
+              <span
+                className={cn(
+                  "text-gray-400 line-through",
+                  compact ? "text-xs" : "text-sm"
+                )}
+              >
+                Rs. {product.originalPrice.toLocaleString()}
+              </span>
             )}
-          >
-            Rs. {product.price.toLocaleString()}
-          </span>
-        </div>
-      </Link>
+          </div>
+        </Link>
+      </div>
     </motion.div>
   );
 };

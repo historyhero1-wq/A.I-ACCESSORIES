@@ -1,15 +1,18 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
+  ChevronDown,
   ChevronRight,
   Heart,
   LayoutDashboard,
   LogOut,
   Menu,
   MessageCircle,
+  Search,
   ShoppingBag,
   User,
   X,
+  Smartphone,
 } from "lucide-react";
 import NavSearch from "@/components/NavSearch";
 import { useCart } from "@/context/CartContext";
@@ -20,33 +23,30 @@ import PurchaseNotificationToast from "@/components/PurchaseNotificationToast";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import SocialLinks from "@/components/SocialLinks";
 import { CONTACT } from "@/lib/contact";
+import {
+  CollectionsMegaMenuRoot,
+  CollectionsNavTrigger,
+  CollectionsMegaMenuPanel,
+  CollectionsMobileLinks,
+} from "@/components/CollectionsMegaMenu";
 
 const navLinks = [
-  { label: "Home", path: "/" },
-  { label: "Collections", path: "/products" },
-  { label: "Loyalty", path: "/loyalty" },
-  { label: "Contact", path: "/contact" },
+  { label: "HOME", path: "/" },
+  { label: "LOYALTY", path: "/loyalty" },
+  { label: "CONTACT", path: "/contact" },
 ];
 
 const footerCustomerCareLinks = [
   { label: "Contact Us", path: "/contact" },
-  { label: "Book Appointment", path: "/contact" },
-  { label: "Size & Care Guide", path: "/size-care" },
-  { label: "Shipping & Returns", path: "/policies#shipping" },
+  { label: "Shipping & Delivery", path: "/policies#shipping" },
+  { label: "Return Policy", path: "/policies" },
+  { label: "Warranty Policy", path: "/policies#warranty" },
   { label: "Policies & FAQ", path: "/policies" },
-];
-
-const ANNOUNCEMENT_SLIDES = [
-  "LIMITED TIME OFFER: Upto 25% OFF ON ALL ORDERS",
-  "FREE DELIVERY ON ALL ORDERS",
-  "NEW ARRIVALS — SHOP CRAFTS & ACCESSORIES",
-  "PREMIUM HANDCRAFTED DESIGNS",
 ];
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [announcementIndex, setAnnouncementIndex] = useState(0);
   const { totalItems } = useCart();
   const { totalFavorites } = useFavorites();
   const { user, logout } = useAuth();
@@ -60,7 +60,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   };
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 50);
+    const onScroll = () => setScrolled(window.scrollY > 10);
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -71,135 +71,161 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   }, [location]);
 
   useEffect(() => {
-    const timer = setInterval(
-      () => setAnnouncementIndex((i) => (i + 1) % ANNOUNCEMENT_SLIDES.length),
-      2500
-    );
-    return () => clearInterval(timer);
-  }, []);
-
-  useEffect(() => {
     if (!mobileOpen) return;
-    const prevOverflow = document.body.style.overflow;
+    const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = prevOverflow;
-    };
+    return () => { document.body.style.overflow = prev; };
   }, [mobileOpen]);
 
   const closeMobileMenu = () => setMobileOpen(false);
-
   const isNavActive = (path: string) =>
     path === "/" ? location.pathname === "/" : location.pathname.startsWith(path);
 
   return (
-    <div className="flex min-h-screen flex-col overflow-x-hidden">
-      {/* Announcement Bar */}
-      <div
-        className="bg-foreground py-2 text-center"
-        aria-live="polite"
-        aria-atomic="true"
-      >
-        <div className="relative mx-auto flex h-5 max-w-4xl items-center justify-center overflow-hidden px-4">
-          <AnimatePresence mode="wait">
-            <motion.p
-              key={announcementIndex}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.35, ease: "easeInOut" }}
-              className="absolute inset-x-4 font-nav text-sm font-medium tracking-wide text-primary-foreground"
-            >
-              {ANNOUNCEMENT_SLIDES[announcementIndex]}
-            </motion.p>
-          </AnimatePresence>
-        </div>
-      </div>
+    <div className="flex min-h-screen flex-col overflow-x-hidden bg-white">
 
-      {/* Navigation */}
+      {/* TOP NAVBAR — exactly like MicroTech */}
       <header
-        className={`top-0 z-50 relative transition-all duration-500 ${
-          scrolled ? "bg-background/95 backdrop-blur-md luxury-shadow" : "bg-background"
+        className={`sticky top-0 z-50 bg-white transition-shadow duration-300 ${
+          scrolled ? "shadow-sm" : ""
         }`}
       >
-        {/* Top nav row */}
-        <div className="border-b border-border/50">
-          <div className="container relative flex items-center py-3 lg:py-4">
-            <div className="z-10 flex w-[4.5rem] shrink-0 items-center justify-start sm:w-20 lg:w-auto lg:flex-1">
+        <div className="border-b border-gray-100">
+          {/* CSS GRID: 3 equal columns — no overlap possible */}
+          <div className="mx-auto grid max-w-7xl grid-cols-[1fr_auto_1fr] items-center gap-2 px-4 py-3 sm:px-6 lg:px-8">
+
+            {/* COL 1 LEFT: Hamburger (mobile) | Nav links (desktop) */}
+            <div className="flex items-center gap-4">
+              {/* Hamburger — mobile only */}
               <button
                 type="button"
                 onClick={() => setMobileOpen(true)}
-                className="lg:hidden text-foreground"
+                className="lg:hidden text-gray-700 flex-shrink-0"
                 aria-label="Open menu"
               >
                 <Menu size={22} />
               </button>
-              <nav className="hidden lg:flex items-center gap-8">
+
+              {/* Desktop nav — hidden on mobile */}
+              <nav className="hidden lg:flex items-center gap-5">
                 {navLinks.map((link) => (
-                  <Link key={link.label} to={link.path} className="nav-link text-foreground/80 hover:text-foreground">
+                  <Link
+                    key={link.label}
+                    to={link.path}
+                    className={`text-[11px] font-bold tracking-wider transition-colors whitespace-nowrap ${
+                      isNavActive(link.path)
+                        ? "text-blue-600"
+                        : "text-gray-700 hover:text-blue-600"
+                    }`}
+                  >
                     {link.label}
                   </Link>
                 ))}
+                {/* Collections dropdown — click to toggle */}
+                <CollectionsMegaMenuRoot>
+                  <CollectionsNavTrigger />
+                  <CollectionsMegaMenuPanel />
+                </CollectionsMegaMenuRoot>
+                <Link
+                  to="/policies"
+                  className="flex items-center gap-0.5 text-[11px] font-bold tracking-wider text-gray-700 hover:text-blue-600 transition-colors whitespace-nowrap"
+                >
+                  POLICIES
+                </Link>
               </nav>
             </div>
 
-            {/* Center Logo — z-30 so side nav does not block clicks */}
+            {/* COL 2 CENTER: Logo — auto width, always centered */}
             <Link
               to="/"
               onClick={handleLogoClick}
-              aria-label="Craftie._.Area home"
-              className="relative z-30 min-w-0 flex-1 px-1 pointer-events-auto lg:absolute lg:left-1/2 lg:flex-none lg:-translate-x-1/2 lg:px-0"
+              aria-label="A.I Mobile Accessories home"
+              className="flex items-center justify-center gap-2"
             >
-              <div className="text-center">
-                <h1 className="truncate font-display text-xl font-semibold text-foreground sm:text-2xl md:text-3xl">
-                  Craftie._.Area
-                </h1>
-                <p className="font-nav text-[10px] tracking-wide text-muted-foreground -mt-0.5 sm:text-xs">
-                  Handcrafted with elegance
+              <img
+                src="/logo.jpg"
+                alt="A.I Accessories"
+                className="h-9 w-9 shrink-0 rounded-full object-cover shadow-sm ring-1 ring-gray-200"
+              />
+              <div className="leading-tight">
+                <p className="font-display text-sm sm:text-base font-black tracking-tight text-gray-900 leading-none whitespace-nowrap">
+                  A.I ACCESSORIES
+                </p>
+                <p className="text-[8px] font-medium uppercase tracking-widest text-gray-400 mt-0.5 whitespace-nowrap hidden sm:block">
+                  Mobile Accessories & More
                 </p>
               </div>
             </Link>
 
-            <div className="z-10 flex w-[4.5rem] shrink-0 items-center justify-end gap-2 sm:w-24 sm:gap-2.5 lg:w-auto lg:gap-5">
-              <NavSearch className="inline-flex items-center justify-center" />
+            {/* COL 3 RIGHT: Icons */}
+            <div className="flex items-center justify-end gap-2 sm:gap-3">
+              <NavSearch className="inline-flex items-center justify-center text-gray-600 hover:text-gray-900 transition-colors" />
+
+              {/* Social — desktop only, small */}
+              <a
+                href={CONTACT.social.tiktok}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="TikTok"
+                className="hidden xl:flex h-8 w-8 items-center justify-center rounded-full border border-gray-100 text-gray-500 hover:border-gray-300 hover:text-gray-800 transition-colors"
+              >
+                <svg viewBox="0 0 24 24" fill="currentColor" width={14} height={14}>
+                  <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.77 1.52V6.76a4.85 4.85 0 0 1-1-.07z" />
+                </svg>
+              </a>
+              <a
+                href={CONTACT.social.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+                className="hidden xl:flex h-8 w-8 items-center justify-center rounded-full border border-gray-100 text-gray-500 hover:border-pink-300 hover:text-pink-500 transition-colors"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} width={14} height={14}>
+                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                  <circle cx="12" cy="12" r="4" />
+                  <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+                </svg>
+              </a>
+
               <Link
                 to="/favorites"
-                className="relative hidden text-foreground/70 transition-colors hover:text-foreground md:inline-flex"
+                className="relative hidden text-gray-600 hover:text-gray-900 transition-colors md:inline-flex"
                 aria-label="Favorites"
               >
                 <Heart size={20} />
                 {totalFavorites > 0 && (
-                  <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-nav text-primary-foreground">
+                  <span className="absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-blue-600 text-[9px] font-bold text-white">
                     {totalFavorites}
                   </span>
                 )}
               </Link>
-              <Link to="/cart" className="relative text-foreground/70 hover:text-foreground transition-colors" aria-label="Cart">
+
+              <Link
+                to="/cart"
+                className="relative text-gray-600 hover:text-gray-900 transition-colors"
+                aria-label="Cart"
+              >
                 <ShoppingBag size={20} />
                 {totalItems > 0 && (
-                  <span className="absolute -top-2 -right-2 w-5 h-5 bg-primary text-primary-foreground text-[10px] font-nav flex items-center justify-center rounded-full">
+                  <span className="absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-blue-600 text-[9px] font-bold text-white">
                     {totalItems}
                   </span>
                 )}
               </Link>
+
               {user ? (
-                <div className="flex items-center gap-2 lg:gap-3">
-                  <span className="hidden max-w-[7rem] truncate font-nav text-xs uppercase tracking-normal text-foreground/70 lg:inline">
-                    {user.name}
-                  </span>
-                  <Link
-                    to="/account"
-                    aria-label="Account dashboard"
-                    className="text-foreground/70 hover:text-foreground transition-colors"
-                  >
-                    <LayoutDashboard size={20} />
-                  </Link>
-                </div>
+                <Link
+                  to="/account"
+                  aria-label="Account"
+                  className="text-gray-600 hover:text-gray-900 transition-colors"
+                >
+                  <LayoutDashboard size={20} />
+                </Link>
               ) : (
                 <Link
                   to="/login"
                   aria-label="Login"
-                  className="inline-flex items-center text-foreground/70 hover:text-foreground transition-colors"
+                  className="text-gray-600 hover:text-gray-900 transition-colors"
                 >
                   <User size={20} />
                 </Link>
@@ -209,7 +235,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         </div>
       </header>
 
-      {/* Mobile Menu */}
+      {/* MOBILE MENU */}
       <AnimatePresence>
         {mobileOpen && (
           <>
@@ -217,294 +243,232 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.25 }}
-              className="fixed inset-0 z-50 bg-foreground/40 backdrop-blur-[2px] lg:hidden"
+              className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm lg:hidden"
               onClick={closeMobileMenu}
-              aria-hidden
             />
             <motion.aside
               initial={{ x: "-100%" }}
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ type: "spring", damping: 28, stiffness: 320 }}
-              className="fixed inset-y-0 left-0 z-50 flex w-[min(320px,88vw)] flex-col border-r border-border bg-background shadow-[8px_0_40px_hsl(30_68%_11%/0.12)] lg:hidden"
-              role="dialog"
-              aria-modal="true"
-              aria-label="Navigation menu"
+              className="fixed inset-y-0 left-0 z-50 flex w-[min(300px,85vw)] flex-col bg-white shadow-2xl lg:hidden"
             >
-              {/* Header */}
-              <div className="flex items-center justify-between border-b border-border/60 px-5 py-4">
-                <div>
-                  <p className="font-display text-xl font-semibold text-foreground">Craftie._.Area</p>
-                  <p className="font-nav text-[10px] tracking-wide text-muted-foreground">
-                    Handcrafted with elegance
-                  </p>
+              {/* Mobile header */}
+              <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+                <div className="flex items-center gap-2">
+                  <img
+                    src="/logo.jpg"
+                    alt="A.I Accessories"
+                    className="h-9 w-9 rounded-full object-cover ring-1 ring-gray-200"
+                  />
+                  <div>
+                    <p className="font-display text-sm font-black text-gray-900 leading-none">A.I ACCESSORIES</p>
+                    <p className="text-[9px] text-gray-400 tracking-widest uppercase mt-0.5">Mobile Accessories</p>
+                  </div>
                 </div>
                 <button
                   type="button"
                   onClick={closeMobileMenu}
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-border text-foreground transition-colors hover:bg-secondary"
-                  aria-label="Close menu"
+                  className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 text-gray-600"
                 >
-                  <X size={20} />
+                  <X size={16} />
                 </button>
               </div>
 
-              <div className="flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain">
+              <div className="flex flex-1 flex-col overflow-y-auto">
                 {/* Search */}
-                <div className="border-b border-border/60 px-5 py-4">
+                <div className="px-5 py-4 border-b border-gray-100">
                   <NavSearch className="inline-flex" onNavigate={closeMobileMenu} />
-                  <p className="mt-2 font-body text-xs text-muted-foreground">
-                    Search bags, collections & more
-                  </p>
                 </div>
 
-                {/* Quick actions */}
-                <div className="grid grid-cols-2 gap-2 border-b border-border/60 px-5 py-4">
-                  <Link
-                    to="/cart"
-                    onClick={closeMobileMenu}
-                    className="flex items-center gap-2.5 rounded-xl border border-border bg-secondary/40 px-3 py-3 transition-colors hover:border-primary/30 hover:bg-secondary"
-                  >
-                    <ShoppingBag size={18} className="shrink-0 text-foreground/70" />
-                    <div className="min-w-0">
-                      <p className="font-nav text-[11px] uppercase tracking-wide text-foreground">Cart</p>
-                      <p className="font-body text-xs text-muted-foreground">
-                        {totalItems > 0 ? `${totalItems} item${totalItems > 1 ? "s" : ""}` : "Empty"}
-                      </p>
+                {/* Cart & Favorites */}
+                <div className="grid grid-cols-2 gap-2 px-4 py-3 border-b border-gray-100">
+                  <Link to="/cart" onClick={closeMobileMenu}
+                    className="flex items-center gap-2 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5">
+                    <ShoppingBag size={16} className="text-gray-500" />
+                    <div>
+                      <p className="text-xs font-semibold text-gray-800">Cart</p>
+                      <p className="text-[10px] text-gray-500">{totalItems > 0 ? `${totalItems} items` : "Empty"}</p>
                     </div>
                   </Link>
-                  <Link
-                    to="/favorites"
-                    onClick={closeMobileMenu}
-                    className="flex items-center gap-2.5 rounded-xl border border-border bg-secondary/40 px-3 py-3 transition-colors hover:border-primary/30 hover:bg-secondary"
-                  >
-                    <Heart size={18} className="shrink-0 text-foreground/70" />
-                    <div className="min-w-0">
-                      <p className="font-nav text-[11px] uppercase tracking-wide text-foreground">Saved</p>
-                      <p className="font-body text-xs text-muted-foreground">
-                        {totalFavorites > 0 ? `${totalFavorites} item${totalFavorites > 1 ? "s" : ""}` : "No items"}
-                      </p>
+                  <Link to="/favorites" onClick={closeMobileMenu}
+                    className="flex items-center gap-2 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5">
+                    <Heart size={16} className="text-gray-500" />
+                    <div>
+                      <p className="text-xs font-semibold text-gray-800">Saved</p>
+                      <p className="text-[10px] text-gray-500">{totalFavorites > 0 ? `${totalFavorites}` : "None"}</p>
                     </div>
                   </Link>
                 </div>
 
-                {/* Main nav */}
-                <nav className="px-3 py-4">
-                  <p className="mb-2 px-2 font-nav text-[10px] uppercase tracking-widest text-muted-foreground">
-                    Menu
-                  </p>
-                  <ul className="space-y-1">
-                    {navLinks.map((link) => {
-                      const active = isNavActive(link.path);
-                      return (
-                        <li key={link.label}>
-                          <Link
-                            to={link.path}
-                            onClick={closeMobileMenu}
-                            className={`flex items-center justify-between rounded-lg px-3 py-3 font-nav text-sm uppercase tracking-wide transition-colors ${
-                              active
-                                ? "bg-foreground text-primary-foreground"
-                                : "text-foreground/80 hover:bg-secondary hover:text-foreground"
-                            }`}
-                          >
-                            {link.label}
-                            <ChevronRight
-                              size={16}
-                              className={active ? "text-primary-foreground/70" : "text-muted-foreground/50"}
-                            />
-                          </Link>
-                        </li>
-                      );
-                    })}
-                  </ul>
+                {/* Nav links */}
+                <nav className="px-3 py-3">
+                  <p className="mb-2 px-2 text-[10px] font-semibold uppercase tracking-widest text-gray-400">Menu</p>
+                  {navLinks.map((link) => (
+                    <Link
+                      key={link.label}
+                      to={link.path}
+                      onClick={closeMobileMenu}
+                      className={`flex items-center justify-between rounded-lg px-3 py-3 text-sm font-semibold tracking-wide transition-colors ${
+                        isNavActive(link.path)
+                          ? "bg-blue-50 text-blue-600"
+                          : "text-gray-700 hover:bg-gray-50"
+                      }`}
+                    >
+                      {link.label}
+                      <ChevronRight size={15} className="text-gray-400" />
+                    </Link>
+                  ))}
+
+                  {/* Collections with image grid */}
+                  <div className="rounded-lg px-3 py-3">
+                    <CollectionsMobileLinks onNavigate={closeMobileMenu} />
+                  </div>
+
+                  <Link
+                    to="/policies"
+                    onClick={closeMobileMenu}
+                    className="flex items-center justify-between rounded-lg px-3 py-3 text-sm font-semibold tracking-wide text-gray-700 hover:bg-gray-50"
+                  >
+                    POLICIES
+                    <ChevronRight size={15} className="text-gray-400" />
+                  </Link>
                 </nav>
 
                 {/* Account */}
-                <div className="border-t border-border/60 px-3 py-4">
-                  <p className="mb-2 px-2 font-nav text-[10px] uppercase tracking-widest text-muted-foreground">
-                    Account
-                  </p>
+                <div className="border-t border-gray-100 px-3 py-3">
+                  <p className="mb-2 px-2 text-[10px] font-semibold uppercase tracking-widest text-gray-400">Account</p>
                   {user ? (
-                    <div className="space-y-2">
-                      <div className="rounded-xl border border-border bg-secondary/30 px-4 py-3">
-                        <p className="font-body text-xs text-muted-foreground">Signed in as</p>
-                        <p className="truncate font-nav text-sm text-foreground">{user.name}</p>
+                    <div className="space-y-1">
+                      <div className="rounded-lg border border-gray-100 bg-gray-50 px-3 py-2.5">
+                        <p className="text-[10px] text-gray-400">Signed in as</p>
+                        <p className="truncate text-sm font-semibold text-gray-800">{user.name}</p>
                       </div>
-                      <Link
-                        to="/account"
-                        onClick={closeMobileMenu}
-                        className="flex items-center justify-between rounded-lg px-3 py-3 font-nav text-sm uppercase tracking-wide text-foreground/80 transition-colors hover:bg-secondary hover:text-foreground"
-                      >
-                        <span className="flex items-center gap-2">
-                          <LayoutDashboard size={16} />
-                          Dashboard
-                        </span>
-                        <ChevronRight size={16} className="text-muted-foreground/50" />
+                      <Link to="/account" onClick={closeMobileMenu}
+                        className="flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm text-gray-700 hover:bg-gray-50">
+                        <LayoutDashboard size={15} /> Dashboard
                       </Link>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          logout();
-                          closeMobileMenu();
-                        }}
-                        className="flex w-full items-center gap-2 rounded-lg px-3 py-3 text-left font-nav text-sm uppercase tracking-wide text-foreground/80 transition-colors hover:bg-secondary hover:text-foreground"
-                      >
-                        <LogOut size={16} />
-                        Logout
+                      <button type="button" onClick={() => { logout(); closeMobileMenu(); }}
+                        className="flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-sm text-gray-700 hover:bg-gray-50">
+                        <LogOut size={15} /> Logout
                       </button>
                     </div>
                   ) : (
                     <div className="grid grid-cols-2 gap-2">
-                      <Link
-                        to="/login"
-                        onClick={closeMobileMenu}
-                        className="rounded-lg border border-border px-3 py-3 text-center font-nav text-xs uppercase tracking-wide text-foreground transition-colors hover:bg-secondary"
-                      >
+                      <Link to="/login" onClick={closeMobileMenu}
+                        className="rounded-lg border border-gray-200 px-3 py-2.5 text-center text-xs font-semibold text-gray-700 hover:bg-gray-50">
                         Login
                       </Link>
-                      <Link
-                        to="/signup"
-                        onClick={closeMobileMenu}
-                        className="rounded-lg bg-foreground px-3 py-3 text-center font-nav text-xs uppercase tracking-wide text-primary-foreground transition-opacity hover:opacity-90"
-                      >
+                      <Link to="/signup" onClick={closeMobileMenu}
+                        className="rounded-lg bg-gray-900 px-3 py-2.5 text-center text-xs font-bold text-white hover:bg-gray-800">
                         Sign Up
                       </Link>
                     </div>
                   )}
                 </div>
-
-                {/* Help links */}
-                <div className="border-t border-border/60 px-3 py-4">
-                  <p className="mb-2 px-2 font-nav text-[10px] uppercase tracking-widest text-muted-foreground">
-                    Help
-                  </p>
-                  <ul className="space-y-1">
-                    {footerCustomerCareLinks.slice(0, 3).map(({ label, path }) => (
-                      <li key={label}>
-                        <Link
-                          to={path}
-                          onClick={closeMobileMenu}
-                          className="flex items-center justify-between rounded-lg px-3 py-2.5 font-body text-sm text-foreground/75 transition-colors hover:bg-secondary hover:text-foreground"
-                        >
-                          {label}
-                          <ChevronRight size={14} className="text-muted-foreground/40" />
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
               </div>
 
               {/* Footer */}
-              <div className="shrink-0 border-t border-border/60 bg-secondary/20 px-5 py-4">
-                <a
-                  href={CONTACT.whatsapp.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mb-4 flex items-center justify-center gap-2 rounded-xl bg-foreground px-4 py-3 font-nav text-xs uppercase tracking-wide text-primary-foreground transition-opacity hover:opacity-90"
-                >
-                  <MessageCircle size={16} />
-                  Chat on WhatsApp
+              <div className="shrink-0 border-t border-gray-100 bg-gray-50 px-5 py-4">
+                <a href={CONTACT.whatsapp.url} target="_blank" rel="noopener noreferrer"
+                  className="mb-3 flex items-center justify-center gap-2 rounded-xl bg-green-500 px-4 py-3 text-xs font-bold text-white">
+                  <MessageCircle size={15} /> Chat on WhatsApp
                 </a>
-                <SocialLinks
-                  className="justify-center"
-                  iconClassName="flex h-9 w-9 items-center justify-center rounded-full border border-border text-foreground/60 transition-colors hover:border-primary hover:text-primary"
-                />
+                <SocialLinks className="justify-center" size="sm" variant="colored" />
               </div>
             </motion.aside>
           </>
         )}
       </AnimatePresence>
 
-      {/* Main */}
+      {/* MAIN CONTENT */}
       <main className="flex-1 overflow-x-hidden">{children}</main>
 
       <PurchaseNotificationToast />
       <WhatsAppButton />
 
-      {/* Footer */}
-      <footer className="bg-foreground text-primary-foreground">
-        <div className="container py-16">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
+      {/* FOOTER — clean & minimal */}
+      <footer className="bg-gray-900 text-white">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
+            {/* Brand */}
             <div>
-              <h3 className="font-display text-xl mb-4">Craftie._.Area</h3>
-              <p className="font-body text-sm text-primary-foreground/70 leading-relaxed mb-5">
-                Handcrafted elegance and bespoke designs for every occasion — quality you can see and feel.
+              <div className="flex items-center gap-3 mb-3">
+                <img
+                  src="/logo.jpg"
+                  alt="A.I Accessories"
+                  className="h-12 w-12 rounded-full object-cover ring-2 ring-gray-700"
+                />
+                <div>
+                  <p className="font-display text-lg font-black leading-none text-white">A.I ACCESSORIES</p>
+                  <p className="text-[9px] font-medium uppercase tracking-widest text-gray-400 mt-0.5">
+                    Mobile Accessories & More
+                  </p>
+                </div>
+              </div>
+              <p className="text-sm text-gray-400 leading-relaxed mb-4">
+                Quality Products • Honest Service • Customer Satisfaction
               </p>
-              <SocialLinks />
-              <a
-                href={CONTACT.email.mailto}
-                className="mt-4 inline-block font-body text-sm text-primary-foreground/70 transition-colors hover:text-primary-foreground"
-              >
+              <SocialLinks variant="default" size="md" />
+              <a href={CONTACT.email.mailto}
+                className="mt-3 inline-block text-sm text-gray-400 hover:text-white transition-colors">
                 {CONTACT.email.address}
               </a>
             </div>
+
+            {/* Products */}
             <div>
-              <h4 className="font-nav text-xs tracking-wide uppercase mb-4">Quick Links</h4>
-              <div className="flex flex-col gap-2">
-                {["New Arrivals", "Bestsellers", "Loyalty Points", "Gift Guide"].map((l) => (
-                  l === "Loyalty Points" ? (
-                    <Link
-                      key={l}
-                      to="/loyalty"
-                      className="font-body text-sm text-primary-foreground/60 transition-colors hover:text-primary-foreground"
-                    >
-                      {l}
-                    </Link>
-                  ) : (
-                    <span key={l} className="font-body text-sm text-primary-foreground/60 hover:text-primary-foreground cursor-pointer transition-colors">{l}</span>
-                  )
+              <h4 className="text-xs font-bold uppercase tracking-widest text-gray-300 mb-5">Products</h4>
+              <div className="flex flex-col gap-2.5">
+                {["Phone Covers", "Chargers & Cables", "Earbuds & Headphones", "Power Banks", "Screen Protectors"].map((l) => (
+                  <Link key={l} to="/products"
+                    className="text-sm text-gray-400 hover:text-white transition-colors">{l}</Link>
                 ))}
               </div>
             </div>
+
+            {/* Customer Care */}
             <div>
-              <h4 className="font-nav text-xs tracking-wide uppercase mb-4">Customer Care</h4>
-              <div className="flex flex-col gap-2">
+              <h4 className="text-xs font-bold uppercase tracking-widest text-gray-300 mb-5">Customer Care</h4>
+              <div className="flex flex-col gap-2.5">
                 {footerCustomerCareLinks.map(({ label, path }) => (
-                  <Link
-                    key={label}
-                    to={path}
-                    className="font-body text-sm text-primary-foreground/60 transition-colors hover:text-primary-foreground"
-                  >
-                    {label}
-                  </Link>
+                  <Link key={label} to={path}
+                    className="text-sm text-gray-400 hover:text-white transition-colors">{label}</Link>
                 ))}
-                <a
-                  href={CONTACT.whatsapp.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-body text-sm text-primary-foreground/60 transition-colors hover:text-primary-foreground"
-                >
+                <a href={CONTACT.whatsapp.url} target="_blank" rel="noopener noreferrer"
+                  className="text-sm text-gray-400 hover:text-white transition-colors">
                   WhatsApp: {CONTACT.whatsapp.display}
                 </a>
-                <a
-                  href={CONTACT.location.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-body text-sm text-primary-foreground/60 transition-colors hover:text-primary-foreground"
-                >
-                  Store Location
-                </a>
               </div>
             </div>
+
+            {/* Newsletter */}
             <div>
-              <h4 className="font-nav text-xs tracking-wide uppercase mb-4">Newsletter</h4>
-              <p className="font-body text-sm text-primary-foreground/60 mb-4">Be the first to discover new collections.</p>
+              <h4 className="text-xs font-bold uppercase tracking-widest text-gray-300 mb-5">Stay Updated</h4>
+              <p className="text-sm text-gray-400 mb-4">Get the latest deals and new arrivals.</p>
               <div className="flex">
                 <input
                   type="email"
-                  placeholder="Your email"
-                  className="flex-1 bg-primary-foreground/10 border border-primary-foreground/20 px-4 py-2 text-sm font-body text-primary-foreground placeholder:text-primary-foreground/40 focus:outline-none focus:border-primary-foreground/40"
+                  placeholder="Your email address"
+                  className="flex-1 rounded-l-lg border border-gray-700 bg-gray-800 px-4 py-2.5 text-sm text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none"
                 />
-                <button className="bg-primary text-primary-foreground px-4 py-2 font-nav text-xs tracking-wider uppercase">
+                <button className="rounded-r-lg bg-blue-600 px-4 py-2.5 text-xs font-bold text-white hover:bg-blue-700 transition-colors">
                   Join
                 </button>
               </div>
+
+              <div className="mt-5 flex gap-4">
+                <a href={CONTACT.social.tiktok} target="_blank" rel="noopener noreferrer"
+                  className="text-xs text-gray-400 hover:text-white transition-colors">🎵 TikTok</a>
+                <a href={CONTACT.social.instagram} target="_blank" rel="noopener noreferrer"
+                  className="text-xs text-gray-400 hover:text-white transition-colors">📷 Instagram</a>
+              </div>
             </div>
           </div>
-          <div className="border-t border-primary-foreground/10 mt-12 pt-8 text-center">
-            <p className="font-body text-xs text-primary-foreground/50">© 2026 Craftie._.Area. All rights reserved.</p>
+
+          <div className="mt-12 border-t border-gray-800 pt-8 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <p className="text-xs text-gray-500">© 2026 A.I Mobile Accessories. All rights reserved.</p>
+            <p className="text-xs text-gray-500">Quality Products • Honest Service • Customer Satisfaction</p>
           </div>
         </div>
       </footer>

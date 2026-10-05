@@ -1,221 +1,262 @@
 import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight, Sparkles, ArrowRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Search } from "lucide-react";
 
-interface SlideData {
-  image: string;
-  badge: string;
+import { resolveProductImageUrl } from "@/services/api";
+
+const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "";
+
+interface Banner {
+  id: number;
+  label: string;
   title: string;
-  highlight?: string;
+  title_line2: string;
   subtitle: string;
-  primaryBtn: { text: string; link: string };
-  secondaryBtn?: { text: string; link: string };
+  subtitle_highlight: string;
+  primary_btn_text: string;
+  primary_btn_link: string;
+  secondary_btn_text: string;
+  secondary_btn_link: string;
+  image_url: string;
+  bg_color: string;
+  sort_order: number;
+  is_active: number;
 }
 
-const slides: SlideData[] = [
+// Fallback slides used when API is unavailable
+const FALLBACK_SLIDES: Banner[] = [
   {
-    image: "/Hero.webp",
-    badge: "Bespoke Handcrafted Luxury",
-    title: "Handmade Resin Art &",
-    highlight: "Bridal Keepsakes",
-    subtitle: "Custom resin trays, signature Nikkah booklets, preserved floral memories & personalized gifts.",
-    primaryBtn: { text: "Shop Collection", link: "/products" },
-    secondaryBtn: { text: "Explore All", link: "/products" },
+    id: 1,
+    label: "A.I MOBILE ACCESSORIES",
+    title: "Premium Mobile",
+    title_line2: "Accessories",
+    subtitle: "Chargers, covers, cables, earbuds & more —",
+    subtitle_highlight: "best quality at unbeatable prices.",
+    primary_btn_text: "SHOP NOW",
+    primary_btn_link: "/products",
+    secondary_btn_text: "VIEW ALL",
+    secondary_btn_link: "/products",
+    image_url: "https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=600&q=80",
+    bg_color: "#f8f9fa",
+    sort_order: 1,
+    is_active: 1,
   },
   {
-    image: "/craft/banners/banner_nikkah_collection.jpg",
-    badge: "Wedding & Nikkah Stationery",
-    title: "Luxury Nikkah Nama &",
-    highlight: "Signature Pens",
-    subtitle: "Celebrate your sacred moments with elegant velvet certificates and bespoke crystal pens.",
-    primaryBtn: { text: "View Nikkah Sets", link: "/products" },
-    secondaryBtn: { text: "Custom Orders", link: "/products" },
+    id: 2,
+    label: "FAST CHARGING COLLECTION",
+    title: "Power Up",
+    title_line2: "Faster Than Ever",
+    subtitle: "High-speed chargers & cables —",
+    subtitle_highlight: "compatible with all iPhone and Android devices.",
+    primary_btn_text: "SHOP NOW",
+    primary_btn_link: "/products",
+    secondary_btn_text: "EXPLORE",
+    secondary_btn_link: "/products",
+    image_url: "https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=600&q=80",
+    bg_color: "#f0f4ff",
+    sort_order: 2,
+    is_active: 1,
   },
   {
-    image: "/craft/banners/banner_resin_art.jpg",
-    badge: "Artisan Home & Event Decor",
-    title: "Handmade Resin Platters &",
-    highlight: "Vanity Trays",
-    subtitle: "Elevate your space with timeless handcrafted resin pieces with gold flakes and crystal gloss finish.",
-    primaryBtn: { text: "Discover Trays", link: "/products" },
-    secondaryBtn: { text: "Shop Gifts", link: "/products" },
+    id: 3,
+    label: "PHONE PROTECTION",
+    title: "Protect Your",
+    title_line2: "Phone In Style",
+    subtitle: "Premium covers & screen guards —",
+    subtitle_highlight: "for iPhone, Samsung, Vivo, Oppo & all brands.",
+    primary_btn_text: "SHOP NOW",
+    primary_btn_link: "/products",
+    secondary_btn_text: "EXPLORE",
+    secondary_btn_link: "/products",
+    image_url: "https://images.unsplash.com/photo-1616348436168-de43ad0db179?w=600&q=80",
+    bg_color: "#f8f9fa",
+    sort_order: 3,
+    is_active: 1,
+  },
+  {
+    id: 4,
+    label: "TRUE WIRELESS EARBUDS",
+    title: "Sound Like",
+    title_line2: "Never Before",
+    subtitle: "Premium earbuds & hands-free —",
+    subtitle_highlight: "crystal clear sound with deep bass.",
+    primary_btn_text: "SHOP NOW",
+    primary_btn_link: "/products",
+    secondary_btn_text: "VIEW ALL",
+    secondary_btn_link: "/products",
+    image_url: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=600&q=80",
+    bg_color: "#fff8f0",
+    sort_order: 4,
+    is_active: 1,
   },
 ];
 
 const HeroSlider = () => {
+  const [slides, setSlides] = useState<Banner[]>([]);
   const [current, setCurrent] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
+  // Fetch banners from API
+  useEffect(() => {
+    fetch(`${API_BASE}/index.php?path=banners&active=1`)
+      .then((r) => r.json())
+      .then((data: Banner[]) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setSlides(data);
+        } else {
+          setSlides(FALLBACK_SLIDES);
+        }
+      })
+      .catch(() => setSlides(FALLBACK_SLIDES));
+  }, []);
+
   const nextSlide = useCallback(() => {
     setCurrent((prev) => (prev + 1) % slides.length);
-  }, []);
+  }, [slides.length]);
 
   const prevSlide = useCallback(() => {
     setCurrent((prev) => (prev - 1 + slides.length) % slides.length);
-  }, []);
+  }, [slides.length]);
 
   useEffect(() => {
     if (isPaused || slides.length <= 1) return;
-    const timer = setInterval(nextSlide, 5500);
+    const timer = setInterval(nextSlide, 5000);
     return () => clearInterval(timer);
-  }, [isPaused, nextSlide]);
+  }, [isPaused, nextSlide, slides.length]);
 
-  const activeSlide = slides[current];
+  if (slides.length === 0) {
+    return (
+      <section className="flex min-h-[460px] items-center justify-center bg-gray-50">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+      </section>
+    );
+  }
+
+  const slide = slides[current];
 
   return (
     <section
-      className="relative h-[60vh] min-h-[380px] max-h-[500px] w-full overflow-hidden bg-foreground sm:h-[58vh] sm:min-h-[420px] sm:max-h-[560px] md:h-[62vh] md:max-h-[600px] lg:h-[68vh] lg:max-h-[660px] xl:h-[70vh] xl:max-h-[700px]"
+      className="relative w-full overflow-hidden"
+      style={{ minHeight: "460px", height: "auto", background: slide.bg_color, transition: "background 0.5s ease" }}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={current}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.8, ease: "easeInOut" }}
-          className="absolute inset-0"
-        >
-          {/* Background Image with subtle zoom effect */}
-          <motion.img
-            src={activeSlide.image}
-            alt={activeSlide.title}
-            initial={{ scale: 1.08 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 6, ease: "easeOut" }}
-            className="h-full w-full object-cover object-center"
-          />
+      <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
+        <div className="flex min-h-[460px] items-center justify-between">
 
-          {/* Premium Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/50 to-black/25 sm:from-black/80 sm:via-black/45 sm:to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30" />
-        </motion.div>
-      </AnimatePresence>
-
-      {/* Floating Animated Content */}
-      <div className="container relative z-10 flex h-full items-center px-4 sm:px-6 lg:px-8">
-        <div className="max-w-xl py-4 sm:max-w-2xl sm:py-6">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={`content-${current}`}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-              variants={{
-                hidden: { opacity: 0 },
-                visible: {
-                  opacity: 1,
-                  transition: { staggerChildren: 0.12, delayChildren: 0.1 },
-                },
-                exit: { opacity: 0, transition: { duration: 0.3 } },
-              }}
-              className="space-y-2.5 sm:space-y-3.5"
-            >
-              {/* Badge */}
+          {/* LEFT — Text Content */}
+          <div className="flex-1 py-12 pr-6 lg:pr-16 max-w-xl">
+            <AnimatePresence mode="wait">
               <motion.div
-                variants={{
-                  hidden: { opacity: 0, y: -12 },
-                  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-                }}
-                className="inline-flex items-center gap-1.5 rounded-full border border-gold/40 bg-black/40 px-3 py-1 text-[11px] font-medium tracking-wider uppercase text-gold-light backdrop-blur-md sm:px-3.5 sm:py-1 sm:text-xs"
+                key={`content-${current}`}
+                initial={{ opacity: 0, x: -24 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -12 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
               >
-                <Sparkles className="h-3 w-3 text-gold" />
-                <span>{activeSlide.badge}</span>
-              </motion.div>
+                <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-gray-400">
+                  {slide.label}
+                </p>
 
-              {/* Title */}
-              <motion.h1
-                variants={{
-                  hidden: { opacity: 0, y: 18 },
-                  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
-                }}
-                className="font-display text-2xl font-bold tracking-tight text-white sm:text-3xl md:text-4xl lg:text-5xl leading-tight drop-shadow-md"
-              >
-                {activeSlide.title} {activeSlide.highlight}
-              </motion.h1>
-
-              {/* Subtitle */}
-              <motion.p
-                variants={{
-                  hidden: { opacity: 0, y: 15 },
-                  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-                }}
-                className="font-body text-xs text-white/90 sm:text-sm md:text-base max-w-lg leading-relaxed line-clamp-2 sm:line-clamp-3 drop-shadow-sm"
-              >
-                {activeSlide.subtitle}
-              </motion.p>
-
-              {/* Action Buttons */}
-              <motion.div
-                variants={{
-                  hidden: { opacity: 0, y: 15 },
-                  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-                }}
-                className="flex flex-wrap items-center gap-2.5 pt-1.5 sm:gap-3 sm:pt-2"
-              >
-                <Link
-                  to={activeSlide.primaryBtn.link}
-                  className="group inline-flex items-center gap-1.5 rounded-sm bg-primary px-4 py-2 text-xs font-semibold tracking-wide text-primary-foreground shadow-md transition-all duration-300 hover:bg-primary/90 hover:shadow-lg sm:px-6 sm:py-2.5 sm:text-sm"
+                <h1
+                  className="font-display font-black leading-tight text-gray-900 mb-5"
+                  style={{ fontSize: "clamp(2.2rem, 5.5vw, 4rem)" }}
                 >
-                  <span>{activeSlide.primaryBtn.text}</span>
-                  <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" />
-                </Link>
+                  {slide.title}
+                  <br />
+                  {slide.title_line2}
+                </h1>
 
-                {activeSlide.secondaryBtn && (
+                <p className="mb-8 text-sm sm:text-base leading-relaxed text-gray-500 max-w-sm">
+                  {slide.subtitle}{" "}
+                  <span className="text-blue-600 font-medium">{slide.subtitle_highlight}</span>
+                </p>
+
+                <div className="flex flex-wrap items-center gap-3">
                   <Link
-                    to={activeSlide.secondaryBtn.link}
-                    className="inline-flex items-center rounded-sm border border-white/40 bg-white/10 px-4 py-2 text-xs font-semibold tracking-wide text-white backdrop-blur-md transition-all duration-300 hover:bg-white/25 hover:border-white/70 sm:px-5 sm:py-2.5 sm:text-sm"
+                    to={slide.primary_btn_link}
+                    className="inline-flex items-center bg-gray-900 text-white px-8 py-3.5 text-xs font-bold tracking-widest uppercase hover:bg-gray-800 transition-colors duration-200"
                   >
-                    {activeSlide.secondaryBtn.text}
+                    {slide.primary_btn_text}
                   </Link>
-                )}
+                  <Link
+                    to={slide.secondary_btn_link}
+                    className="inline-flex items-center gap-2 border border-gray-300 bg-white text-gray-700 px-7 py-3.5 text-xs font-bold tracking-widest uppercase hover:border-gray-800 hover:text-gray-900 transition-all duration-200"
+                  >
+                    <Search size={12} />
+                    {slide.secondary_btn_text}
+                  </Link>
+                </div>
               </motion.div>
-            </motion.div>
-          </AnimatePresence>
+            </AnimatePresence>
+          </div>
+
+          {/* RIGHT — Product Image */}
+          <div className="hidden md:flex flex-1 items-center justify-center py-8 pl-4">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={`image-${current}`}
+                initial={{ opacity: 0, scale: 0.88, y: 16 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.92 }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
+                className="relative"
+              >
+                <div
+                  className="absolute bottom-0 left-1/2 -translate-x-1/2 w-48 h-8 blur-xl opacity-20 rounded-full"
+                  style={{ background: "#000" }}
+                />
+                <img
+                  src={resolveProductImageUrl(slide.image_url)}
+                  alt={slide.title_line2}
+                  className="relative z-10 h-64 w-64 lg:h-80 lg:w-80 xl:h-96 xl:w-96 object-contain drop-shadow-2xl"
+                  style={{
+                    filter: "drop-shadow(0 30px 40px rgba(0,0,0,0.15))",
+                    animation: "float-bob 4s ease-in-out infinite",
+                  }}
+                />
+              </motion.div>
+            </AnimatePresence>
+          </div>
         </div>
       </div>
 
-      {/* Navigation Arrows (Desktop / Tablet) */}
+      {/* Slide indicators */}
+      <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex items-center gap-2">
+        {slides.map((_, i) => (
+          <button
+            key={i}
+            type="button"
+            onClick={() => setCurrent(i)}
+            className="rounded-full transition-all duration-400"
+            style={{
+              width: i === current ? "32px" : "8px",
+              height: "4px",
+              background: i === current ? "#111" : "#d1d5db",
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Arrow buttons */}
       {slides.length > 1 && (
         <>
           <button
             type="button"
             onClick={prevSlide}
-            aria-label="Previous slide"
-            className="absolute left-2 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/30 text-white/80 backdrop-blur-md transition-all hover:bg-black/60 hover:text-white sm:left-4 sm:h-10 sm:w-10"
+            className="absolute left-3 sm:left-5 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 shadow-sm hover:shadow-md hover:text-gray-900 transition-all"
           >
-            <ChevronLeft className="h-5 w-5" />
+            <ChevronLeft size={18} />
           </button>
           <button
             type="button"
             onClick={nextSlide}
-            aria-label="Next slide"
-            className="absolute right-2 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/30 text-white/80 backdrop-blur-md transition-all hover:bg-black/60 hover:text-white sm:right-4 sm:h-10 sm:w-10"
+            className="absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 shadow-sm hover:shadow-md hover:text-gray-900 transition-all"
           >
-            <ChevronRight className="h-5 w-5" />
+            <ChevronRight size={18} />
           </button>
         </>
-      )}
-
-      {/* Slide Indicators */}
-      {slides.length > 1 && (
-        <div className="absolute bottom-3 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2 sm:bottom-5">
-          {slides.map((_, i) => (
-            <button
-              key={i}
-              type="button"
-              aria-label={`Go to slide ${i + 1}`}
-              onClick={() => setCurrent(i)}
-              className={`h-1.5 rounded-full transition-all duration-500 ${
-                i === current
-                  ? "w-8 bg-gold-light"
-                  : "w-2 bg-white/40 hover:bg-white/70"
-              }`}
-            />
-          ))}
-        </div>
       )}
     </section>
   );

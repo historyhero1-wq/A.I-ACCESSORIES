@@ -5,16 +5,16 @@ export const CONTACT = {
     url: "https://wa.me/923177219621",
   },
   email: {
-    address: "info@craftiearea.com",
-    mailto: "mailto:info@craftiearea.com",
+    address: "aimobileaccessories@gmail.com",
+    mailto: "mailto:aimobileaccessories@gmail.com",
   },
   location: {
     label: "View on Google Maps",
-    url: "https://share.google/dhU3xtDCyw6dXkZAb",
+    url: "https://maps.google.com",
   },
   social: {
-    facebook: "https://www.facebook.com/share/18gbM3gffu/",
-    instagram: "https://www.instagram.com/craftie._.area",
-    tiktok: "https://www.tiktok.com/@craftie._.area",
+    facebook: "https://www.facebook.com/a.imobileaccessories",
+    instagram: "https://www.instagram.com/invites/contact/?utm_source=ig_contact_invite&utm_medium=copy_link&utm_content=c3xugsz",
+    tiktok: "https://www.tiktok.com/@a.imobileaccessories?_r=1&_t=ZS-9AFBJT504rm",
   },
 } as const;
