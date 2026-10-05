@@ -90,7 +90,7 @@ export const sidebarData: SidebarData = {
         },
         {
           title: 'Site Settings',
-          url: '/settings/site',
+          url: '/site-settings',
           icon: Globe,
         },
         {

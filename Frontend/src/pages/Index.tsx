@@ -71,42 +71,60 @@ const features = [
 
 const Index = () => {
   const { sections: homeSections, isLoading: homeSectionsLoading } = useHomeCategorySections();
-  const { categories: shopCategories, isLoading: shopCategoriesLoading } = useStoreCategories(6);
+  const { categories: shopCategories } = useStoreCategories(20);
+
+  const displayCategories =
+    shopCategories && shopCategories.length > 0
+      ? shopCategories.map((c) => ({
+          title: c.name,
+          slug: c.slug,
+          image:
+            c.image ||
+            "https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=200&q=80",
+        }))
+      : categoryItems;
+
+  const loopItems = [
+    ...displayCategories,
+    ...displayCategories,
+    ...displayCategories,
+  ];
 
   return (
     <>
       {/* Hero Slider */}
       <HeroSlider />
 
-      {/* CATEGORY CIRCLES — exactly like MicroTech with real images */}
+      {/* CATEGORY CIRCLES — connected to Admin categories with real images */}
       <section className="border-b border-gray-100 bg-white overflow-hidden">
         <div className="overflow-x-hidden py-6 sm:py-8">
           <div
             className="category-marquee flex w-max items-end gap-5 sm:gap-7 px-4"
             style={{ willChange: "transform" }}
           >
-            {loopItems.map((cat, i) => (
-              <Link
-                key={`${cat.title}-${i}`}
-                to="/products"
-                className="group flex w-20 sm:w-24 shrink-0 flex-col items-center gap-2 text-center"
-              >
-                {/* Circle image — exactly MicroTech style */}
-                <div
-                  className="relative h-16 w-16 sm:h-20 sm:w-20 overflow-hidden rounded-full border-2 border-transparent bg-gray-100 transition-all duration-300 group-hover:border-blue-400 group-hover:shadow-lg group-hover:scale-105"
+            {loopItems.map((cat, i) => {
+              const catSlug = cat.slug || cat.title.toLowerCase().replace(/\s+/g, "-");
+              return (
+                <Link
+                  key={`${cat.title}-${i}`}
+                  to={`/products?category=${encodeURIComponent(catSlug)}`}
+                  className="group flex w-20 sm:w-24 shrink-0 flex-col items-center gap-2 text-center"
                 >
-                  <img
-                    src={cat.image}
-                    alt={cat.title}
-                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
-                    loading="lazy"
-                  />
-                </div>
-                <span className="text-[11px] sm:text-xs font-semibold text-gray-700 group-hover:text-blue-600 transition-colors leading-tight">
-                  {cat.title}
-                </span>
-              </Link>
-            ))}
+                  {/* Circle image */}
+                  <div className="relative h-16 w-16 sm:h-20 sm:w-20 overflow-hidden rounded-full border-2 border-transparent bg-gray-100 transition-all duration-300 group-hover:border-blue-400 group-hover:shadow-lg group-hover:scale-105">
+                    <img
+                      src={cat.image}
+                      alt={cat.title}
+                      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
+                      loading="lazy"
+                    />
+                  </div>
+                  <span className="text-[11px] sm:text-xs font-semibold text-gray-700 group-hover:text-blue-600 transition-colors leading-tight">
+                    {cat.title}
+                  </span>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </section>

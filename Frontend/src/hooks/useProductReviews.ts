@@ -21,7 +21,7 @@ export function useSubmitReview() {
             queryClient.invalidateQueries({ queryKey: ['product-reviews', variables.product_id.toString()] });
             toast.success('Review submitted successfully!');
         },
-        onError: (error: any) => {
+        onError: (error: Error) => {
             toast.error(error.message || 'Failed to submit review');
         },
     });

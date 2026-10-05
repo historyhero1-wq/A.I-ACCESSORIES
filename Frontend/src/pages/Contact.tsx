@@ -8,41 +8,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
 import { CONTACT } from "@/lib/contact";
+import { useSettings } from "@/context/SettingsContext";
 import { validatePhoneNumber } from "@/lib/phone-validation";
 import { trackGALead } from "@/lib/google-analytics";
-
-const contactInfo = [
-  {
-    icon: MapPin,
-    title: "Our Location",
-    description: "Visit us in store or get directions on Google Maps.",
-    action: {
-      label: CONTACT.location.label,
-      href: CONTACT.location.url,
-      external: true,
-    },
-  },
-  {
-    icon: MessageCircle,
-    title: "WhatsApp",
-    description: "Message us for orders, product questions, or support.",
-    action: {
-      label: CONTACT.whatsapp.display,
-      href: CONTACT.whatsapp.url,
-      external: true,
-    },
-  },
-  {
-    icon: Mail,
-    title: "Email",
-    description: "Reach our team for business inquiries and customer care.",
-    action: {
-      label: CONTACT.email.address,
-      href: CONTACT.email.mailto,
-      external: false,
-    },
-  },
-];
 
 type ContactFormData = {
   name: string;
@@ -57,9 +25,45 @@ const initialFormData: ContactFormData = {
 };
 
 const Contact = () => {
+  const { settings } = useSettings();
   const [formData, setFormData] = useState<ContactFormData>(initialFormData);
   const [phoneTouched, setPhoneTouched] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const contactInfo = [
+    {
+      icon: MapPin,
+      title: "Our Location",
+      description: settings.store_address || "Visit us in store or get directions on Google Maps.",
+      action: {
+        label: CONTACT.location.label,
+        href: CONTACT.location.url,
+        external: true,
+      },
+    },
+    {
+      icon: MessageCircle,
+      title: "WhatsApp",
+      description: "Message us for orders, product questions, or support.",
+      action: {
+        label: settings.contact_phone || settings.contact_whatsapp || CONTACT.whatsapp.display,
+        href: settings.contact_whatsapp
+          ? `https://wa.me/${settings.contact_whatsapp.replace(/[^0-9]/g, "")}`
+          : CONTACT.whatsapp.url,
+        external: true,
+      },
+    },
+    {
+      icon: Mail,
+      title: "Email",
+      description: "Reach our team for business inquiries and customer care.",
+      action: {
+        label: settings.contact_email || CONTACT.email.address,
+        href: `mailto:${settings.contact_email || CONTACT.email.address}`,
+        external: false,
+      },
+    },
+  ];
 
   const phoneValidation = validatePhoneNumber(formData.phone);
 

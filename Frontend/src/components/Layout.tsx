@@ -23,6 +23,7 @@ import PurchaseNotificationToast from "@/components/PurchaseNotificationToast";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import SocialLinks from "@/components/SocialLinks";
 import { CONTACT } from "@/lib/contact";
+import { useSettings } from "@/context/SettingsContext";
 import {
   CollectionsMegaMenuRoot,
   CollectionsNavTrigger,
@@ -50,6 +51,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const { totalItems } = useCart();
   const { totalFavorites } = useFavorites();
   const { user, logout } = useAuth();
+  const { settings } = useSettings();
   const location = useLocation();
 
   const handleLogoClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -83,6 +85,22 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <div className="flex min-h-screen flex-col overflow-x-hidden bg-white">
+      {/* Top Announcement Bar from Site Settings */}
+      {settings.announcement_enabled === "1" && settings.announcement_text && (
+        <div className="bg-gray-950 text-white text-[11px] sm:text-xs font-semibold py-1.5 px-4 text-center tracking-wider transition-all z-50">
+          {settings.announcement_link ? (
+            <Link
+              to={settings.announcement_link}
+              className="hover:underline flex items-center justify-center gap-1.5"
+            >
+              <span>{settings.announcement_text}</span>
+              <ChevronRight size={13} className="opacity-75 inline" />
+            </Link>
+          ) : (
+            <span>{settings.announcement_text}</span>
+          )}
+        </div>
+      )}
 
       {/* TOP NAVBAR — exactly like MicroTech */}
       <header

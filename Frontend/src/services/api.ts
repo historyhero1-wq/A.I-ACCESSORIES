@@ -185,7 +185,7 @@ function parseImages(images: BackendProduct['images']) {
     return [];
 }
 
-function resolveImageUrl(image: string) {
+export function resolveImageUrl(image: string) {
     if (!image?.trim()) {
         return image;
     }
@@ -212,6 +212,8 @@ function resolveImageUrl(image: string) {
 
     return image.startsWith('/') ? `${uploadBase}${image}` : `${uploadBase}/${image}`;
 }
+
+export const resolveProductImageUrl = resolveImageUrl;
 
 function parseColors(colors: BackendProduct['colors']) {
     if (Array.isArray(colors)) {

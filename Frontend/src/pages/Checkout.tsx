@@ -7,6 +7,7 @@ import { Lock, ArrowLeft, Loader2, BadgePercent } from "lucide-react";
 import { createOrder, convertCheckoutDraft, fetchLoyaltyStatus, OrderPayload, saveCheckoutDraft } from "@/services/api";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
+import { useSettings } from "@/context/SettingsContext";
 import { calculateLoyaltyDiscount } from "@/lib/loyalty";
 import {
   trackGABeginCheckout,
@@ -22,6 +23,7 @@ import { validatePhoneNumber } from "@/lib/phone-validation";
 const Checkout = () => {
   const { items, totalPrice, clearCart } = useCart();
   const { user, login } = useAuth();
+  const { settings, calculateShipping } = useSettings();
   const [placed, setPlaced] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [phoneTouched, setPhoneTouched] = useState(false);
@@ -286,7 +288,7 @@ const Checkout = () => {
     );
   }
 
-  const shipping = 0;
+  const shipping = calculateShipping(appliedSavings.totalAfterDiscount);
   const orderTotal = appliedSavings.totalAfterDiscount + shipping;
 
   return (
@@ -438,12 +440,16 @@ const Checkout = () => {
               )}
               <div className="flex justify-between font-body text-sm">
                 <span className="text-muted-foreground">Shipping</span>
-                <span className="text-foreground">FREE</span>
+                <span className="text-foreground">
+                  {shipping === 0 ? "FREE" : `${settings.currency_symbol || "Rs."} ${shipping}`}
+                </span>
               </div>
             </div>
             <div className="border-t border-border pt-4 flex justify-between">
               <span className="font-nav text-xs tracking-wider uppercase text-foreground">Total</span>
-              <span className="font-display text-xl text-foreground">Rs. {orderTotal.toLocaleString()}</span>
+              <span className="font-display text-xl text-foreground">
+                {settings.currency_symbol || "Rs."} {orderTotal.toLocaleString()}
+              </span>
             </div>
           </div>
         </div>

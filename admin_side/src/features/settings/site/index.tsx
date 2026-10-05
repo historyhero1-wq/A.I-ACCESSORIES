@@ -15,6 +15,10 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 import apiClient from '@/lib/api-client'
+import { Header } from '@/components/layout/header'
+import { Main } from '@/components/layout/main'
+import { ProfileDropdown } from '@/components/profile-dropdown'
+import { ThemeSwitch } from '@/components/theme-switch'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -100,20 +104,32 @@ export function SiteSettings() {
   }
 
   return (
-    <div className='space-y-6 pb-12 w-full'>
-      {/* Top Header */}
-      <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b pb-4'>
-        <div>
-          <h2 className='text-2xl font-bold tracking-tight'>Website & Store Settings</h2>
-          <p className='text-sm text-muted-foreground'>
-            Configure store info, delivery charges, pricing, policies, and announcement banners across the whole website.
-          </p>
+    <>
+      <Header fixed>
+        <div className='flex items-center gap-2 px-4'>
+          <h1 className='text-lg font-semibold tracking-tight'>Website & Store Settings</h1>
         </div>
-        <Button onClick={() => handleSave()} disabled={isSaving} className='gap-2 shrink-0'>
-          <Save className='h-4 w-4' />
-          {isSaving ? 'Saving Changes...' : 'Save All Settings'}
-        </Button>
-      </div>
+        <div className='ml-auto flex items-center space-x-4'>
+          <ThemeSwitch />
+          <ProfileDropdown />
+        </div>
+      </Header>
+
+      <Main>
+        <div className='space-y-6 pb-12 w-full'>
+          {/* Top Header */}
+          <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b pb-4'>
+            <div>
+              <h2 className='text-2xl font-bold tracking-tight'>Website & Store Settings</h2>
+              <p className='text-sm text-muted-foreground'>
+                Configure store info, delivery charges, pricing, policies, and announcement banners across the whole website.
+              </p>
+            </div>
+            <Button onClick={() => handleSave()} disabled={isSaving} className='gap-2 shrink-0'>
+              <Save className='h-4 w-4' />
+              {isSaving ? 'Saving Changes...' : 'Save All Settings'}
+            </Button>
+          </div>
 
       <Tabs defaultValue='store' className='space-y-4'>
         <TabsList className='grid grid-cols-2 md:grid-cols-5 w-full max-w-3xl h-auto p-1'>
@@ -514,17 +530,19 @@ export function SiteSettings() {
         </TabsContent>
       </Tabs>
 
-      {/* Floating / Bottom Save Bar */}
-      <div className='flex items-center justify-between rounded-lg border bg-card p-4 shadow-sm'>
-        <div className='flex items-center gap-2 text-sm text-muted-foreground'>
-          <CheckCircle2 className='h-4 w-4 text-emerald-600' />
-          <span>All settings are saved directly to MySQL database and take effect storewide immediately.</span>
+        {/* Floating / Bottom Save Bar */}
+        <div className='flex items-center justify-between rounded-lg border bg-card p-4 shadow-sm'>
+          <div className='flex items-center gap-2 text-sm text-muted-foreground'>
+            <CheckCircle2 className='h-4 w-4 text-emerald-600' />
+            <span>All settings are saved directly to MySQL database and take effect storewide immediately.</span>
+          </div>
+          <Button onClick={() => handleSave()} disabled={isSaving} className='gap-2'>
+            <Save className='h-4 w-4' />
+            {isSaving ? 'Saving Changes...' : 'Save All Settings'}
+          </Button>
         </div>
-        <Button onClick={() => handleSave()} disabled={isSaving} className='gap-2'>
-          <Save className='h-4 w-4' />
-          {isSaving ? 'Saving Changes...' : 'Save All Settings'}
-        </Button>
       </div>
-    </div>
-  )
+    </Main>
+  </>
+)
 }

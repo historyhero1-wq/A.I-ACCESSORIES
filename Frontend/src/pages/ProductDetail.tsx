@@ -133,14 +133,14 @@ const ProductDetail = () => {
   const displayRating = useMemo(() => {
     if (!product) return 0;
     if (reviews.length === 0) return parseFloat(product.rating || "0");
-    const sum = reviews.reduce((acc: any, rev: any) => acc + rev.rating, 0);
+    const sum = reviews.reduce((acc: number, rev: { rating: number }) => acc + rev.rating, 0);
     return sum / reviews.length;
   }, [reviews, product]);
 
   const displayReviewCount = useMemo(() => {
     if (!product) return 0;
     return Math.max(reviews.length, product.reviewCount || 0);
-  }, [reviews.length, product?.reviewCount]);
+  }, [reviews.length, product]);
 
   const mediaItems: { type: "image" | "video"; url: string }[] = useMemo(() => {
     if (!product) return [];

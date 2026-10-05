@@ -12,7 +12,7 @@ import { SidebarNav } from './components/sidebar-nav'
 const sidebarNavItems = [
   {
     title: 'Website & Policies',
-    href: '/settings/site',
+    href: '/site-settings',
     icon: <Globe size={18} />,
   },
   {

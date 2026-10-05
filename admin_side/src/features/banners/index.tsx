@@ -7,9 +7,7 @@ import {
   Image as ImageIcon,
   Upload,
   Check,
-  Eye,
   ArrowUpDown,
-  ExternalLink,
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { Header } from '@/components/layout/header'
