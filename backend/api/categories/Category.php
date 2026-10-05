@@ -54,25 +54,6 @@ class Category {
             }
         }
 
-        try {
-            $count = (int)$this->conn->query("SELECT COUNT(*) FROM " . $this->table_name)->fetchColumn();
-            if ($count === 0) {
-                $this->conn->exec("
-                    INSERT INTO `categories` (`id`, `name`, `slug`, `parent_id`, `show_on_home`, `home_sort_order`, `image`) VALUES
-                    (1,  'Phone Covers',      'phone-covers',      NULL, 1, 1,  'https://images.unsplash.com/photo-1616348436168-de43ad0db179?w=400&q=80'),
-                    (2,  'Chargers',          'chargers',          NULL, 1, 2,  'https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=400&q=80'),
-                    (3,  'USB Cables',        'usb-cables',        NULL, 1, 3,  'https://images.unsplash.com/photo-1583394838336-acd977736f90?w=400&q=80'),
-                    (4,  'Earbuds',           'earbuds',           NULL, 1, 4,  'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400&q=80'),
-                    (5,  'Power Banks',       'power-banks',       NULL, 1, 5,  'https://images.unsplash.com/photo-1609592424216-2ea3f4e14cd9?w=400&q=80'),
-                    (6,  'Screen Protectors', 'screen-protectors', NULL, 1, 6,  'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&q=80'),
-                    (7,  'Smart Watches',     'smart-watches',     NULL, 1, 7,  'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=80'),
-                    (8,  'Hands-free',        'hands-free',        NULL, 1, 8,  'https://images.unsplash.com/photo-1484704849700-f032a568e944?w=400&q=80'),
-                    (9,  'Car Accessories',   'car-accessories',   NULL, 1, 9,  'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=400&q=80'),
-                    (10, 'All Accessories',   'all-accessories',   NULL, 1, 10, 'https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=400&q=80');
-                ");
-            }
-        } catch (Exception $e) {
-        }
     }
 
     private function deleteLocalImage($imageUrl) {

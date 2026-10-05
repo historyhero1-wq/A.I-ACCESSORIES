@@ -2,24 +2,13 @@
 
 ## Setup Instructions
 
-1.  **Database**:
-    *   Create a MySQL database (e.g., `craftie_area` or `ateeqo`).
-    *   Import the `db.sql` file located in the root of this folder.
+1. Start Apache and MySQL in XAMPP.
+2. Import `RCA_FINAL.sql` into phpMyAdmin. It creates/updates the `RCA` schema used by `config/database.php`, preserves existing rows, and can be run again safely. It does not seed demo products or categories.
+3. Keep the database credentials in `config/database.php` aligned with your MySQL installation.
+4. Set `VITE_API_BASE_URL` in both the storefront and admin environment files to the URL of this backend's `api` directory. For local XAMPP, the URL follows `http://localhost/<project-folder>/backend/api`.
+5. Open `http://localhost/<project-folder>/backend/api/index.php?path=categories` to verify the API is responding with JSON.
 
-2.  **Configuration**:
-    *   Open `config/database.php` and update the database credentials (host, username, password, dbname).
-
-3.  **Web Server**:
-    *   Point your web server (Apache/Nginx) to the `backend/` folder.
-    *   Ensure `mod_rewrite` is enabled in Apache for the `.htaccess` files to work.
-
-4.  **API Endpoints**:
-    *   Base URL: `http://your-domain/api/`
-    *   **Auth**: `POST /api/auth/register`, `POST /api/auth/login`
-    *   **Products**: `GET /api/products`, `GET /api/products/{slug}`
-    *   **Tracking**: `POST /api/tracking/init`, `POST /api/tracking/pageview`, `POST /api/tracking/ping`
-    *   **Orders**: `POST /api/orders/create`
-    *   **Admin**: `GET /api/admin/stats`, `GET /api/admin/live-traffic`, `GET /api/admin/users`
+Point the web server document root at the project directory, ensure PHP is enabled, and allow the `backend/uploads/` directory to be writable by the web server so category, product, and banner images can be saved.
 
 ## Key Features
 

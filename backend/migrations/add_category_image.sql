@@ -1,1 +1,0 @@
-ALTER TABLE categories ADD COLUMN image VARCHAR(500) NULL DEFAULT NULL AFTER home_sort_order;
